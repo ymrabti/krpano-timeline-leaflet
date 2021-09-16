@@ -91,7 +91,7 @@
     <events name="skin_events" devices="fullscreensupport" onenterfullscreen="set(layer[skin_btn_fs].crop, '64|576|64|64');" onexitfullscreen="set(layer[skin_btn_fs].crop, '0|576|64|64');" />
 
     <include url="/plugins/webvr.xml" devices="html5" />
-    <plugin name="webvr" keep="true" devices="html5.and.webgl" url="calc:skin_settings.webvr == true ? '/plugins/webvr.js' : null" onavailable="skin_webvr_onavailable();" onentervr="skin_showloading(false); webvr_onentervr(); skin_webvr_setup(); skin_reloadscene_webvr();" onexitvr="webvr_onexitvr(); skin_webvr_setup(); skin_reloadscene_webvr();" />
+    <plugin name="webvr" keep="true" devices="html5.and.webgl" url="calc:skin_settings.webvr == true ? '%FIRSTXML%/plugins/webvr.js' : null" onavailable="skin_webvr_onavailable();" onentervr="skin_showloading(false); webvr_onentervr(); skin_webvr_setup(); skin_reloadscene_webvr();" onexitvr="webvr_onexitvr(); skin_webvr_setup(); skin_reloadscene_webvr();" />
     <style name="webvr_button_style" bgroundedge="calc:skin_settings.design_bgroundedge" bgcolor="get:skin_settings.design_bgcolor" bgalpha="get:skin_settings.design_bgalpha" bgborder="get:skin_settings.design_bgborder" bgshadow="get:skin_settings.design_bgshadow" css="calc:skin_settings.design_text_css + ' font-size:' + 20*webvr_setup_scale*webvr_button_scale + 'px;'" />
     <!-- show a 'rotate the device' info when the mobile device is in portrait orientation in VR mode -->
     <layer name="webvr_rotate_to_landscape_request" keep="true" vr="true" devices="mobile" url="rotate_device.png" scale="0.5" align="top" edge="center" y="28%" autoalpha="true" alpha="0.0" enabled="false" />
