@@ -159,7 +159,7 @@
      -->
 
 
-    <plugin name="skin_gyro" keep="true" url="" html5_url="%VIEWER%/plugins/gyro2.js" softstart="1.0" desktopsupport="false" enabled="true" onavailable="skin_arrange_buttons();" devices="html5" />
+    <plugin name="skin_gyro" keep="true" url="" html5_url="%VIEWER%/plugins/gyro.js" softstart="1.0" desktopsupport="false" enabled="true" onavailable="skin_arrange_buttons();" devices="html5" />
 
     <!-- Skin Events -->
 
