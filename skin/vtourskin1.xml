@@ -136,7 +136,7 @@
         <layer name="skin_btn_gyro" style="skin_base|skin_glow" crop="0|384|64|64" align="bottom" x="140" y="4" scale="0.5" ondown2="skin_showmap(false);" onclick="switch(plugin[skin_gyro].enabled);" visible="false" devices="html5" />
 
 
-        <layer name="skin_btn_vr" style="skin_base|skin_glow" crop="0|80|80|64" align="center" x="+146" y="0" scale="0.5" onclick="webvr.enterVR();" visible="false" />
+        <layer name="skin_btn_vr" style="skin_base|skin_glow" crop="64|0|80|64" align="center" x="+146" y="0" scale="0.5" onclick="webvr.enterVR();" visible="false" />
 
 
         <layer name="skin_btn_fs" style="skin_base|skin_glow" crop="0|576|64|64" align="bottom" x="140" y="4" scale="0.5" onclick="switch(fullscreen);" devices="fullscreensupport" />
@@ -155,11 +155,10 @@
 
     <layer name="skin_logo" keep="true" url="" align="righttop" x="5" y="5" capture="false" accuracy="1" state="small" onclick="if(state == 'small', skin_openlogo(); , skin_closelogo('now'); opened_onclick(); );" />
 
-    <!-- <plugin name="skin_gyro" keep="true" alturl="%SWFPATH%/plugins/gyro.js" devices="html5" enabled="false" camroll="true" friction="0" velastic="0" onavailable="if(device.fullscreensupport, if(device.mobile,add(layer[skin_btn_gyro].x,40),add(layer[skin_btn_gyro].x,20));); set(layer[skin_btn_gyro].visible,true);" />
-     -->
+    <plugin name="skin_gyro" keep="true" alturl="%SWFPATH%/plugins/gyro.js" devices="html5" enabled="false" camroll="true" friction="0" velastic="0" onavailable="if(device.fullscreensupport, if(device.mobile,add(layer[skin_btn_gyro].x,40),add(layer[skin_btn_gyro].x,20));); set(layer[skin_btn_gyro].visible,true);" />
 
 
-    <plugin name="skin_gyro" keep="true" url="" html5_url="%VIEWER%/plugins/gyro.js" softstart="1.0" desktopsupport="false" enabled="true" onavailable="skin_arrange_buttons();" devices="html5" />
+    <plugin name="skin_gyro" keep="true" url="" html5_url="%VIEWER%/plugins/gyro2.js" softstart="1.0" desktopsupport="false" enabled="true" onavailable="skin_arrange_buttons();" devices="html5" />
 
     <!-- Skin Events -->
 
