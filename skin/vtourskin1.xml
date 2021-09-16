@@ -158,7 +158,7 @@
     <plugin name="skin_gyro" keep="true" alturl="%SWFPATH%/plugins/gyro.js" devices="html5" enabled="false" camroll="true" friction="0" velastic="0" onavailable="if(device.fullscreensupport, if(device.mobile,add(layer[skin_btn_gyro].x,40),add(layer[skin_btn_gyro].x,20));); set(layer[skin_btn_gyro].visible,true);" />
 
 
-    <plugin name="skin_gyro" keep="true" url="" html5_url="%VIEWER%/plugins/gyro2.js" softstart="1.0" desktopsupport="false" enabled="true" onavailable="skin_arrange_buttons();" devices="html5" />
+    <!-- <plugin name="skin_gyro" keep="true" url="" html5_url="%VIEWER%/plugins/gyro2.js" softstart="1.0" desktopsupport="false" enabled="true" onavailable="skin_arrange_buttons();" devices="html5" /> -->
 
     <!-- Skin Events -->
 
