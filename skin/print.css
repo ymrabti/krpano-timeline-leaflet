@@ -1,0 +1,23 @@
+#krpanoSWFObject > div:first-child {
+    /*transform: scale(0.74) translate(-235px, -76px);*/
+    /*width: 11in;
+    height: 8in;*/
+}
+
+#krpanoSWFObject {
+    background: white;
+}
+
+body {
+    background: white;
+}
+
+* {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+@page {
+    size: landscape;
+    margin: 0.5cm;
+}
