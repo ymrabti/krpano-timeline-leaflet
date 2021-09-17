@@ -164,8 +164,8 @@ leafletmapPlugin.DataProvider = {
 
         var script = document.createElement('script'),
             action = this._actions.leaflet,
-            src = /* this.firstXML */'https://players.applied-streetview.com/Timeline/' + action.url + action.actionNames.getLeafletJS,
-            appendTo = document.getElementsByTagName('head')[0];
+            src = this.firstXML + action.url + action.actionNames.getLeafletJS,
+            appendTo = document.head;
 
         if (script.readyState && !script.onload) {
             // IE, Opera
@@ -192,7 +192,7 @@ leafletmapPlugin.DataProvider = {
         link.setAttribute("rel", "stylesheet");
         link.setAttribute("type", "text/css");
         link.setAttribute("href", cssURL);
-        document.getElementsByTagName("head")[0].appendChild(link);
+        document.head.appendChild(link);
     }
 };
 /*! promise-polyfill 2.0.0 */
@@ -1154,39 +1154,23 @@ leafletmapPlugin.leafletmapIncludeXMLContent = function (krpano) {
         'leafletmap_add_plugin_stuff',
         {
             content:
-                'trace(Map plug-in by Applied-Streetview.com version 20160224); ' +
-
-                'addlayer(leafletmap_btn); ' +
-                'set(layer[leafletmap_btn].keep, true); ' +
-                'layer[leafletmap_btn].loadstyle("skin_base|skin_glow"); ' +
-                'set(layer[leafletmap_btn].crop, "64|128|64|64"); ' +
-                'set(layer[leafletmap_btn].align, "left"); ' +
-                'set(layer[leafletmap_btn].x, 20); ' +
-                'set(layer[leafletmap_btn].scale, "0.5"); ' +
-                'set(layer[leafletmap_btn].visible, false); ' +
-                'set(layer[leafletmap_btn].ondown2, "leafletmap_show_hide_container();"); ' +
-                'set(layer[leafletmap_btn].parent, layer[skin_control_bar]); ' +
-
-                'if(plugin[leafletmap].btn_visible, ' +
-                '    set(layer[leafletmap_btn].visible, true); ' +
-                '); ' +
-
-                'if(plugin[leafletmap].visible, ' +
-                '    set(layer[leafletmap_btn].visible, true); ' +
-                '); ' +
-
-
-                'if (layer[skin_btn_hide] ' +
-                '    , txtadd(layer[skin_btn_hide].onclick, "; leafletmap_move_container();"); ' +
-                '); ' +
-
-                'if (layer[skin_btn_show] ' +
-                '    , txtadd(layer[skin_btn_show].onclick, "; leafletmap_move_container();"); ' +
-                '); ' +
-
-                'if(plugin[streetview].hide_menu == true, ' +
-                '   copy(plugin[leafletmap].y, plugin[leafletmap].y_closed);' +
-                '); '
+            `
+                addlayer(leafletmap_btn); 
+                set(layer[leafletmap_btn].keep, true); 
+                layer[leafletmap_btn].loadstyle("skin_base|skin_glow"); 
+                set(layer[leafletmap_btn].crop, "64|128|64|64"); 
+                set(layer[leafletmap_btn].align, "left"); 
+                set(layer[leafletmap_btn].x, 20); 
+                set(layer[leafletmap_btn].scale, "0.5"); 
+                set(layer[leafletmap_btn].visible, false); 
+                set(layer[leafletmap_btn].ondown2, "leafletmap_show_hide_container();"); 
+                set(layer[leafletmap_btn].parent, layer[skin_control_bar]); 
+                if (plugin[leafletmap].btn_visible, set(layer[leafletmap_btn].visible, true); ); 
+                if (plugin[leafletmap].visible, set(layer[leafletmap_btn].visible, true); ); 
+                if (layer[skin_btn_hide], txtadd(layer[skin_btn_hide].onclick, "; leafletmap_move_container();"); ); 
+                if (layer[skin_btn_show], txtadd(layer[skin_btn_show].onclick, "; leafletmap_move_container();"); ); 
+                if (plugin[streetview].hide_menu == true, copy(plugin[leafletmap].y, plugin[leafletmap].y_closed);); 
+            `
         }
     );
 
