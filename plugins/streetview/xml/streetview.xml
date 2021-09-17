@@ -52,9 +52,9 @@
 
         <layer name="streetview_tm_label" keep="true" url="%FIRSTXML%/plugins/textfield.swf" align="right" x="150" selectable="false" handcursor="false" background="false" css="data:streetview_css_normal" textshadow="1" />
 
-        <layer name="streetview_tm_arrow_left" keep="true" style="skin_glow" url="%FIRSTXML%/plugins/streetview/images/tm_arrow_left.png" align="right" x="123" scale="0.5" ondown2="js(krpanoPluginsStuff.streetview.setPrevBatch());" />
+        <layer name="streetview_tm_arrow_left" keep="true" style="skin_base|skin_glow" crop="128|128|64|64" align="right" x="120" scale="0.35" ondown2="js(krpanoPluginsStuff.streetview.setPrevBatch());" />
 
-        <layer name="streetview_tm_arrow_right" keep="true" style="skin_glow" url="%FIRSTXML%/plugins/streetview/images/tm_arrow_right.png" align="right" x="-10" scale="0.5" ondown2="js(krpanoPluginsStuff.streetview.setNextBatch());" />
+        <layer name="streetview_tm_arrow_right" keep="true" style="skin_base|skin_glow" crop="128|64|64|64" align="right" x="-5" scale="0.35" ondown2="js(krpanoPluginsStuff.streetview.setNextBatch());" />
 
     </layer>
     <action name="streetview_startup">

@@ -73,8 +73,7 @@ var krpanoplugin = function () {
         plugin = pluginobject;
         streetviewPlugin.changeLayerOrder();
         var havegraphiccontent = plugin.show_timeline == 'true';
-        if (havegraphiccontent)
-        {
+        if (havegraphiccontent) {
             plugin.visible = true;
             plugincanvas = document.createElement('select');
             plugincanvas.setAttribute('id', 'timeline');
@@ -124,20 +123,24 @@ streetviewPlugin.init = function (container, krpano, plugin) {
             var that = container;
             if (that.selectedIndex == 0) {
                 krpano.set('layer[streetview_tm_arrow_left].enabled', false);
+                krpano.set('layer[streetview_tm_arrow_left].crop', "128|320|64|64");
                 if (krpano.skin_lockglow == 'streetview_tm_arrow_left') {
                     krpano.set('layer[streetview_tm_arrow_left].hovering', false);
                 }
             } else {
                 krpano.set('layer[streetview_tm_arrow_left].enabled', true);
+                krpano.set('layer[streetview_tm_arrow_left].crop', "128|128|64|64");
             }
 
             if (that.selectedIndex == that.options.length - 1) {
                 krpano.set('layer[streetview_tm_arrow_right].enabled', false);
+                krpano.set('layer[streetview_tm_arrow_right].crop', "128|256|64|64");
                 if (krpano.skin_lockglow == 'streetview_tm_arrow_right') {
                     krpano.set('layer[streetview_tm_arrow_right].hovering', false);
                 }
             } else {
                 krpano.set('layer[streetview_tm_arrow_right].enabled', true);
+                krpano.set('layer[streetview_tm_arrow_right].crop', "128|64|64|64");
             }
         },
         setPrevBatch = function () {
