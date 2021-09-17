@@ -69,7 +69,9 @@ leafletmapPlugin.DataProvider = {
             sectionName: 'leaflet',
             actionNames: {
                 getLeafletJS: 'leaflet-custom.js',
-                getLeafletCSS: 'leaflet.css'
+                getLeafletCSS: 'leaflet.css',
+                getLeafletPluginJS: 'L.Control.Layers.Tree.js',
+                getLeafletPluginCSS: 'L.Control.Layers.Tree.css',
             },
             url: 'plugins/leafletmap/leafletjs/'
         }
@@ -257,6 +259,7 @@ var krpanoplugin = function () {
 
                 leafletmapPlugin.leafletmapIncludeXMLContent(krpano);
                 krpano.call("leafletmap_add_plugin_stuff();");
+                // krpano.call("vr_add_plugin_stuff();");
             });
 
         }
@@ -575,13 +578,61 @@ leafletmapPlugin.initMap = function (container, krpano, plugin) {
         }
     };
 
+    var baseTree = [
+        {
+            label: 'OpenStreeMap',
+            children: [
+                {
+                    label: 'OSM', layer: window.L.tileLayer(
+                        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        { attribution: null }
+                    ), name: 'OpenStreeMap'
+                },
+                {
+                    label: 'B&W', layer: window.L.tileLayer(
+                        'http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png',
+                        { attribution: null }
+                    ), name: 'OpenStreeMap <b>B&W</b>'
+                },
+                {
+                    label: 'OpenTopoMap', layer: window.L.tileLayer(
+                        'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+                        { attribution: null }
+                    ), name: 'Topographic - OSM'
+                },
+            ]
+        },
+        {
+            label: 'Thunder',
+            children: [
+                {
+                    label: 'Satellite', layer: window.L.tileLayer(
+                        'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+                        { attribution: null }
+                    ), name: "Satellite"
+                },
+                {
+                    label: 'Dark', layer: window.L.tileLayer(
+                        'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
+                        { attribution: null }
+                    ), name: "Dark"
+                },
+                {
+                    label: 'Light', layer: window.L.tileLayer(
+                        'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png',
+                        { attribution: null }
+                    ), name: "Light"
+                },
+            ]
+        },
+    ];
 
     // init map
     var map = /*window.map = */ (isLocalVersion ? window.L.map : window.L.myMap)(container, {
         //center: getCurSpotLatLng(),
         zoom: +plugin.mapoptions.zoom,
         zoomControl: true,
-        keyboard: false,
+        keyboard: false, layers: [baseTree[0].children[0].layer],
         isLocalVersion: isLocalVersion
     }).on('zoomend', skipMarkers);
 
@@ -636,11 +687,48 @@ leafletmapPlugin.initMap = function (container, krpano, plugin) {
 
     // init tiles controller and add it to the map
     mapProviderUrl += mapProviderUrl.indexOf('{z}') > -1 ? '' : '{z}/{x}/{y}.png';
-    window.L.tileLayer(mapProviderUrl, {
+    /* window.L.tileLayer(mapProviderUrl, {
         attribution: attributionLine,
         maxNativeZoom: 18,
         maxZoom: +plugin.mapoptions.maxzoom
-    }).addTo(map);
+    }).addTo(map); */
+
+
+    var action_Plugin = leafletmapPlugin.DataProvider._actions.leaflet;
+    let itv = setInterval(() => {
+        // console.log(window.L.control.layers.tree);
+        krpano.trace(2, "Error LayerSwitcher")
+        if (!window.L.control.layers.tree) {
+            var script_plugin = document.createElement('script'),
+            src_Plugin = leafletmapPlugin.DataProvider.firstXML + action_Plugin.url + action_Plugin.actionNames.getLeafletPluginJS,
+            appendToPlugin = document.head;
+            if (script_plugin.readyState && !script_plugin.onload) {
+                script_plugin.onreadystatechange = function () {
+                    if (script_plugin.readyState == "loaded" || script_plugin.readyState == "complete") {
+                        script_plugin.onreadystatechange = null;
+                        console.log("callback();");
+                    }
+                }
+            }
+            else {
+                script_plugin.onload = (evt) => { };
+            }
+            script_plugin.src = src_Plugin;
+            appendToPlugin.appendChild(script_plugin);
+            
+
+            //load leaflet.css
+            var link_Plugin = document.createElement("link"),
+                cssURL_Plugin = leafletmapPlugin.DataProvider.firstXML + action_Plugin.url + action_Plugin.actionNames.getLeafletPluginCSS;
+            link_Plugin.setAttribute("rel", "stylesheet");
+            link_Plugin.setAttribute("type", "text/css");
+            link_Plugin.setAttribute("href", cssURL_Plugin);console.log(cssURL_Plugin);
+            document.head.appendChild(link_Plugin);
+        } else {
+            window.L.control.layers.tree(baseTree).addTo(map);
+            clearInterval(itv);
+        }
+    }, 1000);
 
 
     // add close button on the map
@@ -1154,7 +1242,7 @@ leafletmapPlugin.leafletmapIncludeXMLContent = function (krpano) {
         'leafletmap_add_plugin_stuff',
         {
             content:
-            `
+                `
                 addlayer(leafletmap_btn); 
                 set(layer[leafletmap_btn].keep, true); 
                 layer[leafletmap_btn].loadstyle("skin_base|skin_glow"); 
@@ -1170,6 +1258,25 @@ leafletmapPlugin.leafletmapIncludeXMLContent = function (krpano) {
                 if (layer[skin_btn_hide], txtadd(layer[skin_btn_hide].onclick, "; leafletmap_move_container();"); ); 
                 if (layer[skin_btn_show], txtadd(layer[skin_btn_show].onclick, "; leafletmap_move_container();"); ); 
                 if (plugin[streetview].hide_menu == true, copy(plugin[leafletmap].y, plugin[leafletmap].y_closed);); 
+
+            `
+        }
+    );
+    krpano.action.createItem(
+        'vr_add_plugin_stuff',
+        {
+            content:
+                `
+                addlayer(skin_btn_pv);
+                set(layer[skin_btn_pv].keep, true);
+                layer[skin_btn_pv].loadstyle("skin_base|skin_glow");
+                set(layer[skin_btn_pv].crop, "64|0|80|64");
+                set(layer[skin_btn_pv].align, "center");
+                set(layer[skin_btn_pv].x, -150);
+                set(layer[skin_btn_pv].scale, "0.5");
+                set(layer[skin_btn_pv].visible, true);
+                set(layer[skin_btn_pv].onclick, webvr.enterVR(););
+                set(layer[skin_btn_pv].parent, layer[skin_control_bar]);
             `
         }
     );
