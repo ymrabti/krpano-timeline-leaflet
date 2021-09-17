@@ -74,10 +74,8 @@
     <layer name="skin_buttonglow" keep="true" style="skin_base" crop="64|384|64|64" align="center" x="0" y="1" alpha="0.0" visible="false" enabled="false" />
     <layer name="skin_thumbborder" keep="true" url="vtourskin_thumbborder.png" visible="false" enabled="false" align="lefttop" scale="0.5" ox="-2" oy="-2" />
     <layer name="skin_logo" keep="true" url="" align="righttop" x="5" y="5" capture="false" accuracy="1" state="small" onclick="if(state == 'small', skin_openlogo(); , skin_closelogo('now'); opened_onclick(); );" />
-
     <plugin name="skin_gyro" keep="true" alturl="%SWFPATH%/plugins/gyro.js" devices="html5" enabled="false" camroll="true" friction="0" velastic="0" onavailable="if(device.fullscreensupport, if(device.mobile,add(layer[skin_btn_gyro].x,40),add(layer[skin_btn_gyro].x,20));); set(layer[skin_btn_gyro].visible,true);" />
     
-    <!-- <plugin name="skin_gyro" keep="true" url="" html5_url="%VIEWER%/plugins/gyro2.js" softstart="1.0" desktopsupport="false" enabled="true" onavailable="skin_arrange_buttons();" devices="html5" /> -->
     <!-- Skin Events -->
     <events name="skin_events" keep="true" onxmlcomplete="set(events[skin_events].onxmlcomplete,null); skin_startup();" onnewpano="skin_showloading(true); skin_update_scene_infos();" onremovepano="skin_showloading(true);" onloadcomplete="skin_showloading(false);" onresize="skin_onresize();" />
     <events name="skin_events" devices="fullscreensupport" onenterfullscreen="set(layer[skin_btn_fs].crop, '64|576|64|64');" onexitfullscreen="set(layer[skin_btn_fs].crop, '0|576|64|64');" />
