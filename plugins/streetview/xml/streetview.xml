@@ -185,7 +185,7 @@
             ,
             set(sv.startpano_heading, %2);
         );
-        <!-- set(sv.temp_pano_url,  %FIRSTXML%/plugins/streetview/ajax/kgen.php?sv=%1); -->
+    
         set(sv.temp_pano_url,  https://players.applied-streetview.com/Timeline/plugins/streetview/ajax/kgen.php?sv=%1);
 
         txtadd(sv.temp_pano_url, get(sv.temp_pano_url), &amp;tiles_dir_struct=, get(sv.tiles_dir_struct));

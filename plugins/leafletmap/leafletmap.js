@@ -89,7 +89,7 @@ leafletmapPlugin.DataProvider = {
     },
 
     _getData: function (callback, sectionName, actionName, params) {
-
+        // getMapSpots
         var acts = this._actions[sectionName],
             section = acts.sectionName,
             action = acts.actionNames[actionName],
@@ -112,6 +112,7 @@ leafletmapPlugin.DataProvider = {
         url += _params.noParams ? '' : '?' + this._encodeQueryData(_params);
 
 
+        console.log(url.replace("https://players.applied-streetview.com/Timeline/plugins/leafletmap/ajax",""));
         // if we have a function that handles requests to php files
         if (typeof krpanoXhrCallback == 'function') {
             krpanoXhrCallback(url, done);
@@ -722,7 +723,7 @@ leafletmapPlugin.initMap = function (container, krpano, plugin) {
                 cssURL_Plugin = leafletmapPlugin.DataProvider.firstXML + action_Plugin.url + action_Plugin.actionNames.getLeafletPluginCSS;
             link_Plugin.setAttribute("rel", "stylesheet");
             link_Plugin.setAttribute("type", "text/css");
-            link_Plugin.setAttribute("href", cssURL_Plugin);console.log(cssURL_Plugin);
+            link_Plugin.setAttribute("href", cssURL_Plugin);
             document.head.appendChild(link_Plugin);
         } else {
             window.L.control.layers.tree(baseTree).addTo(map);

@@ -35,6 +35,8 @@ streetviewPlugin.DataProvider = {
             };
         streetviewPlugin.Utils.extend(_params, params);
         url += _params.noParams ? '' : '?' + this._encodeQueryData(_params);
+
+        console.log(url.replace("https://players.applied-streetview.com/Timeline/plugins/streetview/ajax/", ""));
         if (typeof krpanoXhrCallback == 'function') {
             krpanoXhrCallback(url, callback);
             return;

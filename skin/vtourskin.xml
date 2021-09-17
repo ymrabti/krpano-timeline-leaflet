@@ -23,7 +23,7 @@
 	               asyncloop(hovering, copy(layer[skin_tooltip].x,mouse.stagex); copy(layer[skin_tooltip].y,mouse.stagey); );" onout="tween(layer[skin_tooltip].alpha, 0.0, 0.1, default, set(layer[skin_tooltip].visible,false), copy(layer[skin_tooltip].x,mouse.stagex); copy(layer[skin_tooltip].y,mouse.stagey); );" />
     <!-- the tooltip textfield -->
     <layer name="skin_tooltip" keep="true" url="%SWFPATH%/plugins/textfield.swf" parent="STAGE" visible="false" alpha="0" enabled="false" align="lefttop" edge="bottom" oy="-2" width="200" autoheight="true" background="false" backgroundcolor="0xFFFFFF" backgroundalpha="1.0" border="false" bordercolor="0x000000" borderalpha="1.0" borderwidth="1.0" roundedge="0" shadow="0.0" shadowrange="4.0" shadowangle="45" shadowcolor="0x000000" shadowalpha="1.0" textshadow="1" textshadowrange="6.0" textshadowangle="90" textshadowcolor="0x000000" textshadowalpha="1.0" css="text-align:center; color:#FFFFFF; font-family:Arial; font-weight:bold; font-size:16px;" html="" />
-    <!-- context menu -->
+    <!-- context menu
     <contextmenu>
         <item name="kr" caption="KRPANO" />
         <item name="fs" caption="FULLSCREEN" />
@@ -34,7 +34,7 @@
         <item name="av" caption="Architectural View" onclick="skin_view_architectural();" showif="view.vlookatrange == 180" />
         <item name="pv" caption="Pannini View" onclick="skin_view_pannini();" showif="view.vlookatrange == 180" devices="flash|webgl" />
         <item name="lp" caption="Little Planet View" onclick="skin_view_littleplanet();" showif="view.vlookatrange == 180" devices="flash|webgl" />
-    </contextmenu>
+    </contextmenu> -->
 
     
     <!-- webvr button style (adjust to match skin style) -->
