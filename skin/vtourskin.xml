@@ -70,8 +70,8 @@
         <layer name="skin_btn_in" style="skin_base|skin_glow" crop="0|320|64|64" align="bottom" x="+60" y="4" scale="0.5" ondown2="set(fov_moveforce,-1);" onup2="set(fov_moveforce,0);" />
         <layer name="skin_btn_ou" style="skin_base|skin_glow" crop="64|320|64|64" align="bottom" x="+100" y="4" scale="0.5" ondown2="set(fov_moveforce,+1);" onup2="set(fov_moveforce,0);" />
         
-        <layer name="skin_btn_gyro" style="skin_base|skin_glow" crop="0|384|64|64" align="bottom" x="140" y="4" scale="0.5" ondown2="skin_showmap(false);" onclick="switch(plugin[skin_gyro].enabled);" visible="false" devices="html5" />
-        <layer name="skin_btn_fs" style="skin_base|skin_glow" crop="0|576|64|64" align="bottom" x="140" y="4" scale="0.5" onclick="switch(fullscreen);" devices="fullscreensupport" />
+        <layer name="skin_btn_gyro" style="skin_base|skin_glow" crop="0|384|64|64" align="bottom" x="90" y="4" scale="0.5" ondown2="skin_showmap(false);" onclick="switch(plugin[skin_gyro].enabled);" visible="false" devices="html5" />
+        <layer name="skin_btn_fs"   style="skin_base|skin_glow" crop="0|576|64|64" align="bottom" x="140" y="4" scale="0.5" onclick="switch(fullscreen);" devices="fullscreensupport" />
         <!--  -->
         <layer name="skin_btn_hide" style="skin_base|skin_glow" crop="0|448|64|64" align="right" x="50" y="0" scale="0.5" onclick="skin_hideskin()" />
         <layer name="skin_btn_show" style="skin_base|skin_glow" crop="64|448|64|64" align="right" x="5" y="-36" scale="0.5" alpha="0" visible="false" onclick="skin_showskin()" />
@@ -496,7 +496,6 @@
 			set(events[skin_events].onmouseup, null);
 		  );
     </action>
-
     <action name="skin_changecontrolmode">
 		switch(control.mousetype, moveto, drag2d);
 		switch(control.touchtype, moveto, drag2d);
