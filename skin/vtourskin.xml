@@ -107,6 +107,7 @@
         </layer>
         <layer name="skin_control_bar" height="64" y="0" y_opened="0" y_closed="-68">
             <layer name="skin_btmborder" visible="false" />
+            <layer name="leafletmap_btn" scale="1" />
             <layer name="skin_btn_prev" scale="1" y="0" align="left" x="0" />
             <layer name="skin_btn_next" scale="1" y="0" align="left" x="80" />
             <layer name="skin_btn_thumbs" scale="1" y="0" align="left" x="160" />
