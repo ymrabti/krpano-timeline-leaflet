@@ -10,7 +10,7 @@ streetviewPlugin.DataProvider = {
             actionNames: {
                 getDates: 'dates'
             },
-            url: 'http://players.applied-streetview.com/Timeline/plugins/streetview/ajax/timeline.php'
+            url: 'https://players.applied-streetview.com/Timeline/plugins/streetview/ajax/timeline.php'
         }
     },
     _encodeQueryData: function (data) {
