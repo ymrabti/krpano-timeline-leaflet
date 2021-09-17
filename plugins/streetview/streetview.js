@@ -10,7 +10,7 @@ streetviewPlugin.DataProvider = {
             actionNames: {
                 getDates: 'dates'
             },
-            url: 'https://players.applied-streetview.com/Timeline/plugins/streetview/ajax/timeline.php'
+            url: 'http://players.applied-streetview.com/Timeline/plugins/streetview/ajax/timeline.php'
         }
     },
     _encodeQueryData: function (data) {
@@ -39,7 +39,6 @@ streetviewPlugin.DataProvider = {
             krpanoXhrCallback(url, callback);
             return;
         }
-        // console.log(url);
         xmlhttp.open('GET', url, true);
         xmlhttp.onreadystatechange = function () {
             if (!(xmlhttp.readyState == 4 && (xmlhttp.status == 200 || xmlhttp.responseText))) {
@@ -74,7 +73,8 @@ var krpanoplugin = function () {
         plugin = pluginobject;
         streetviewPlugin.changeLayerOrder();
         var havegraphiccontent = plugin.show_timeline == 'true';
-        if (havegraphiccontent) {
+        if (havegraphiccontent)
+        {
             plugin.visible = true;
             plugincanvas = document.createElement('select');
             plugincanvas.setAttribute('id', 'timeline');
@@ -92,8 +92,9 @@ var krpanoplugin = function () {
     };
 };
 streetviewPlugin.init = function (container, krpano, plugin) {
+
     var parseDates = function (data) {
-        var tmpl = '<option value="$1" >$2</option>',
+        var tmpl = '<option value="$1"'/* +$1 */ + '>$2</option>',
             html = '',
             selectedIndex;
         for (var i = 0; i < data.length; i++) {
@@ -123,23 +124,19 @@ streetviewPlugin.init = function (container, krpano, plugin) {
             var that = container;
             if (that.selectedIndex == 0) {
                 krpano.set('layer[streetview_tm_arrow_left].enabled', false);
-                krpano.set('layer[streetview_tm_arrow_left].crop', "128|320|64|64");
                 if (krpano.skin_lockglow == 'streetview_tm_arrow_left') {
                     krpano.set('layer[streetview_tm_arrow_left].hovering', false);
                 }
             } else {
-                krpano.set('layer[streetview_tm_arrow_left].crop', "128|128|64|64");
                 krpano.set('layer[streetview_tm_arrow_left].enabled', true);
             }
 
             if (that.selectedIndex == that.options.length - 1) {
                 krpano.set('layer[streetview_tm_arrow_right].enabled', false);
-                krpano.set('layer[streetview_tm_arrow_right].crop', "128|256|64|64");
                 if (krpano.skin_lockglow == 'streetview_tm_arrow_right') {
                     krpano.set('layer[streetview_tm_arrow_right].hovering', false);
                 }
             } else {
-                krpano.set('layer[streetview_tm_arrow_right].crop', "128|64|64|64");
                 krpano.set('layer[streetview_tm_arrow_right].enabled', true);
             }
         },

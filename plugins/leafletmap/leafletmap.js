@@ -91,7 +91,7 @@ leafletmapPlugin.DataProvider = {
         var acts = this._actions[sectionName],
             section = acts.sectionName,
             action = acts.actionNames[actionName],
-            url = /* this.firstXML */'https://players.applied-streetview.com/Timeline/' + acts.url;
+            url = /* this.firstXML */'http://players.applied-streetview.com/Timeline/' + acts.url;
 
         var done = function (data) {
             if (callback && data && !data.error) {
@@ -164,7 +164,7 @@ leafletmapPlugin.DataProvider = {
 
         var script = document.createElement('script'),
             action = this._actions.leaflet,
-            src = /* this.firstXML */'https://players.applied-streetview.com/Timeline/' + action.url + action.actionNames.getLeafletJS,
+            src = /* this.firstXML */'http://players.applied-streetview.com/Timeline/' + action.url + action.actionNames.getLeafletJS,
             appendTo = document.getElementsByTagName('head')[0];
 
         if (script.readyState && !script.onload) {

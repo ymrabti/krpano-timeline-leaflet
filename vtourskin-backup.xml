@@ -1,8 +1,9 @@
 <krpano>
     <!-- krpano 1.18.3 - Default Virtual Tour Skin -->
     <!-- Global Skin settings (can be overridden in the 'outer' xml) -->
-    <skin_settings maps="false" maps_type="bing" maps_bing_api_key="" maps_zoombuttons="false" gyro="true" title="true" thumbs="true" thumbs_width="120" thumbs_height="80" thumbs_padding="10" thumbs_crop="0|40|240|160" thumbs_opened="false" thumbs_text="false" thumbs_dragging="true" thumbs_onhoverscrolling="false" thumbs_scrollbuttons="false" thumbs_scrollindicator="false" thumbs_loop="false" tooltips_thumbs="false" tooltips_hotspots="false" tooltips_mapspots="false" loadscene_flags="MERGE" loadscene_blend="BLEND(0.5)" controlbar_offset="20" />
-    
+    <skin_settings maps="false" maps_type="google" maps_google_api_key="" maps_loadonfirstuse="true" maps_bing_api_key="" maps_zoombuttons="false" gyro="true" webvr="true" webvr_keeplookingdirection="true" webvr_prev_next_hotspots="true" thumbs_crop="0|40|240|160" thumbs_dragging="true" gyro_keeplookingdirection="false" thumbs_onhoverscrolling="false" tooltips_hotspots="false" tooltips_mapspots="false" loadscene_flags="MERGE" autotour="false" loadscene_blend="OPENBLEND(0.5, 0.0, 0.75, 0.05, linear)" followmousecontrol="false" littleplanetintro="false" layout_width="100%" deeplinking="false" design_thumbborder_padding="2" design_thumbborder_bgroundedge="0" design_text_css="color:#FFFFFF; font-family:Arial;" design_text_shadow="1" title="true" thumbs="true" thumbs_width="120" thumbs_height="80" thumbs_padding="10" thumbs_opened="false" thumbs_text="false" thumbs_scrollbuttons="false" thumbs_scrollindicator="false" thumbs_loop="false" tooltips_buttons="false" tooltips_thumbs="false" loadscene_blend_prev="SLIDEBLEND(0.5, 180, 0.75, linear)" loadscene_blend_next="SLIDEBLEND(0.5,   0, 0.75, linear)" loadingtext="" layout_maxwidth="814" controlbar_width="-24" controlbar_height="40" controlbar_offset="20" controlbar_offset_closed="-40" controlbar_overlap.no-fractionalscaling="10" controlbar_overlap.fractionalscaling="0" design_skin_images="vtourskin.png" design_bgcolor="0x2D3E50" design_bgalpha="0.8" design_bgborder="0" design_bgroundedge="1" design_bgshadow="0 4 10 0x000000 0.3" design_thumbborder_bgborder="3 0xFFFFFF 1.0" />
+    <skin_settings />
+
     <!-- Skin Styles -->
     <!-- skin_base - the base skin image -->
     <style name="skin_base" url="vtourskin.png" />
@@ -17,7 +18,7 @@
 	               set(layer[skin_tooltip].visible, true);
 	               tween(layer[skin_tooltip].alpha, 1.0, 0.1);
 	               asyncloop(hovering, copy(layer[skin_tooltip].x,mouse.stagex); copy(layer[skin_tooltip].y,mouse.stagey); );" onout="tween(layer[skin_tooltip].alpha, 0.0, 0.1, default, set(layer[skin_tooltip].visible,false), copy(layer[skin_tooltip].x,mouse.stagex); copy(layer[skin_tooltip].y,mouse.stagey); );" />
-                   <!-- the tooltip textfield -->
+    <!-- the tooltip textfield -->
     <layer name="skin_tooltip" keep="true" url="%SWFPATH%/plugins/textfield.swf" parent="STAGE" visible="false" alpha="0" enabled="false" align="lefttop" edge="bottom" oy="-2" width="200" autoheight="true" background="false" backgroundcolor="0xFFFFFF" backgroundalpha="1.0" border="false" bordercolor="0x000000" borderalpha="1.0" borderwidth="1.0" roundedge="0" shadow="0.0" shadowrange="4.0" shadowangle="45" shadowcolor="0x000000" shadowalpha="1.0" textshadow="1" textshadowrange="6.0" textshadowangle="90" textshadowcolor="0x000000" textshadowalpha="1.0" css="text-align:center; color:#FFFFFF; font-family:Arial; font-weight:bold; font-size:16px;" html="" />
     <!-- context menu -->
     <contextmenu>
@@ -31,7 +32,7 @@
         <item name="pv" caption="Pannini View" onclick="skin_view_pannini();" showif="view.vlookatrange == 180" devices="flash|webgl" />
         <item name="lp" caption="Little Planet View" onclick="skin_view_littleplanet();" showif="view.vlookatrange == 180" devices="flash|webgl" />
     </contextmenu>
-    
+
     <!-- Skin Layout -->
     <layer name="skin_scroll_window" type="container" keep="true" align="leftbottom" width="100%" height="100%" x="0" y="60" y_opened="60" y_closed="-2" maskchildren="true">
         <layer name="skin_scroll_layer" type="container" align="leftbottom" width="100%" height="100%" x="0" y="-100%">
@@ -65,7 +66,15 @@
         <layer name="skin_btn_dn" style="skin_base|skin_glow" crop="64|256|64|64" align="bottom" x="+20" y="4" scale="0.5" ondown2="set(vlookat_moveforce,+1);" onup2="set(vlookat_moveforce,0);" />
         <layer name="skin_btn_in" style="skin_base|skin_glow" crop="0|320|64|64" align="bottom" x="+60" y="4" scale="0.5" ondown2="set(fov_moveforce,-1);" onup2="set(fov_moveforce,0);" />
         <layer name="skin_btn_ou" style="skin_base|skin_glow" crop="64|320|64|64" align="bottom" x="+100" y="4" scale="0.5" ondown2="set(fov_moveforce,+1);" onup2="set(fov_moveforce,0);" />
+
+
+        <layer name="infotext" type="text" background="false" border="false" enabled="false" html="" css="text-align:left; color:#FFFFFF; font-family:Arial; font-size:14px; font-weight:bold;" align="left" x="90" height="100%" vcenter="true" />
+        <layer name="gyrobutton" visible="false" scale="0.5" style="skin_base|skin_glow" crop="0|384|64|64" align="left" x="90" height="100%" vcenter="true" />
+
         <layer name="skin_btn_gyro" style="skin_base|skin_glow" crop="0|384|64|64" align="bottom" x="140" y="4" scale="0.5" ondown2="skin_showmap(false);" onclick="switch(plugin[skin_gyro].enabled);" visible="false" devices="html5" />
+
+        <layer name="skin_btn_vr" style="skin_base|skin_glow" crop="0|0|80|64" align="center" x="+146" y="0" scale="0.5" onclick="webvr.enterVR();" visible="false" />
+
         <layer name="skin_btn_fs" style="skin_base|skin_glow" crop="0|576|64|64" align="bottom" x="140" y="4" scale="0.5" onclick="switch(fullscreen);" devices="fullscreensupport" />
         <layer name="skin_btn_hide" style="skin_base|skin_glow" crop="0|448|64|64" align="right" x="50" y="0" scale="0.5" onclick="skin_hideskin()" />
         <layer name="skin_btn_show" style="skin_base|skin_glow" crop="64|448|64|64" align="right" x="5" y="-36" scale="0.5" alpha="0" visible="false" onclick="skin_showskin()" />
@@ -74,12 +83,233 @@
     <layer name="skin_buttonglow" keep="true" style="skin_base" crop="64|384|64|64" align="center" x="0" y="1" alpha="0.0" visible="false" enabled="false" />
     <layer name="skin_thumbborder" keep="true" url="vtourskin_thumbborder.png" visible="false" enabled="false" align="lefttop" scale="0.5" ox="-2" oy="-2" />
     <layer name="skin_logo" keep="true" url="" align="righttop" x="5" y="5" capture="false" accuracy="1" state="small" onclick="if(state == 'small', skin_openlogo(); , skin_closelogo('now'); opened_onclick(); );" />
-    <plugin name="skin_gyro" keep="true" alturl="%SWFPATH%/plugins/gyro.js" devices="html5" enabled="false" camroll="true" friction="0" velastic="0" onavailable="if(device.fullscreensupport, if(device.mobile,add(layer[skin_btn_gyro].x,40),add(layer[skin_btn_gyro].x,20));); set(layer[skin_btn_gyro].visible,true);" />
-    
+    <!-- <plugin name="skin_gyro" keep="true" alturl="%SWFPATH%/plugins/gyro.js" devices="html5" enabled="false" camroll="true" friction="0" velastic="0" onavailable="if(device.fullscreensupport, if(device.mobile,add(layer[skin_btn_gyro].x,40),add(layer[skin_btn_gyro].x,20));); set(layer[skin_btn_gyro].visible,true);" /> -->
+
+    <plugin name="skin_gyro" keep="true" url="" html5_url="%VIEWER%/plugins/gyro2.js" softstart="1.0" desktopsupport="false" enabled="true" onavailable="skin_arrange_buttons();" devices="html5" />
     <!-- Skin Events -->
     <events name="skin_events" keep="true" onxmlcomplete="set(events[skin_events].onxmlcomplete,null); skin_startup();" onnewpano="skin_showloading(true); skin_update_scene_infos();" onremovepano="skin_showloading(true);" onloadcomplete="skin_showloading(false);" onresize="skin_onresize();" />
     <events name="skin_events" devices="fullscreensupport" onenterfullscreen="set(layer[skin_btn_fs].crop, '64|576|64|64');" onexitfullscreen="set(layer[skin_btn_fs].crop, '0|576|64|64');" />
+
+    <include url="/plugins/webvr.xml" devices="html5" />
+    <plugin name="webvr" keep="true" devices="html5.and.webgl" url="calc:skin_settings.webvr == true ? '%FIRSTXML%/plugins/webvr.js' : null" onavailable="skin_webvr_onavailable();" onentervr="skin_showloading(false); webvr_onentervr(); skin_webvr_setup(); skin_reloadscene_webvr();" onexitvr="webvr_onexitvr(); skin_webvr_setup(); skin_reloadscene_webvr();" />
+    <style name="webvr_button_style" bgroundedge="calc:skin_settings.design_bgroundedge" bgcolor="get:skin_settings.design_bgcolor" bgalpha="get:skin_settings.design_bgalpha" bgborder="get:skin_settings.design_bgborder" bgshadow="get:skin_settings.design_bgshadow" css="calc:skin_settings.design_text_css + ' font-size:' + 20*webvr_setup_scale*webvr_button_scale + 'px;'" />
+    <!-- show a 'rotate the device' info when the mobile device is in portrait orientation in VR mode -->
+    <layer name="webvr_rotate_to_landscape_request" keep="true" vr="true" devices="mobile" url="rotate_device.png" scale="0.5" align="top" edge="center" y="28%" autoalpha="true" alpha="0.0" enabled="false" />
+    <events name="skin_webvr_and_gyro_events" keep="true" devices="html5" onxmlcomplete="skin_set_webvr_or_gyro_startup_view()" onresize.mobile="skin_webvr_act_as_gyro_in_portrait_mode();" onloadcomplete="delayedcall(0.5, if(webvr.isenabled AND scene.count GT 1 AND skin_settings.webvr_prev_next_hotspots, set(hotspot[skin_webvr_prev_scene].visible,true); set(hotspot[skin_webvr_next_scene].visible,true); ); );" onviewchange="" />
+    <!-- VR scene switching hotspots -->
+    <style name="skin_webvr_menu_style" torigin="view" depth="1000" scale="0.625" distorted="true" ath="0" atv="45" alpha="0.5" />
+    <hotspot name="skin_webvr_prev_scene" keep="true" style="skin_base|skin_webvr_menu_style" crop="0|64|64|64" ox="-88" onover="tween(scale,0.750);" onout="tween(scale,0.625);" vr_timeout="750" onclick="skin_nextscene_loop(-1);" visible="false" devices="html5.and.webgl" />
+    <hotspot name="skin_webvr_next_scene" keep="true" style="skin_base|skin_webvr_menu_style" crop="64|64|64|64" ox="+88" onover="tween(scale,0.750);" onout="tween(scale,0.625);" vr_timeout="750" onclick="skin_nextscene_loop(+1);" visible="false" devices="html5.and.webgl" />
+    <!-- skin_tooltip - style for the thumb, hotspot and mapspot tooltips -->
+    <style name="skin_tooltips" onover.addevent.mouse="copy(layer[skin_tooltip].html, tooltip);
+	                     set(layer[skin_tooltip].visible, calc(webvr.isenabled ? false : true));
+	                     tween(layer[skin_tooltip].alpha, 1.0, 0.1);
+	                     asyncloop(hovering, copy(layer[skin_tooltip].x,mouse.stagex); copy(layer[skin_tooltip].y,mouse.stagey); );" onout.addevent.mouse="tween(layer[skin_tooltip].alpha, 0.0, 0.1, default, set(layer[skin_tooltip].visible,false), copy(layer[skin_tooltip].x,mouse.stagex); copy(layer[skin_tooltip].y,mouse.stagey); );" />
+
     
+    <action name="skin_webvr_onavailable" scope="local">
+        if(webvr.isvrbrowser,
+        <!-- show a special enter VR screen for Gear VR browsers (Oculus Browser or Samsung Internet VR) -->
+        set(layer[webvr_enterbutton], 
+				align=center, y=0, padding='10 20', 
+				css=calc(skin_settings.design_text_css + ' font-size:20px;text-align:center;'),
+				html=calc((global.title ? '[i]'+global.title+'[/i][br]' : '') + '[span style="font-size:40px"]Enter VR[span]'), 
+			);
+			skin_hideskin(instant);
+		  ,
+        <!-- remove the enter vr button from the webvr.xml -->
+        removelayer(webvr_enterbutton);
+		);
+        <!-- update the skin buttons to add the skin vr button -->
+        skin_arrange_buttons();
+        <!-- call the original onavailable event from the webvr.xml -->
+        webvr_onavailable();
+    </action>
+    <action name="skin_set_webvr_or_gyro_startup_view">
+		if( (webvr.isenabled == true AND skin_settings.webvr_keeplookingdirection == false) OR (!webvr.isenabled AND plugin[skin_gyro].enabled == true AND skin_settings.gyro_keeplookingdirection == false),
+			skin_lookat( get(xml.view.hlookat) );
+		);
+	</action>
+    <action name="skin_webvr_setup">
+		if(webvr.isenabled,
+			copy(skin_settings.loadscene_flags_backup, skin_settings.loadscene_flags);
+			set(skin_settings.loadscene_flags, MERGE|KEEPVIEW|KEEPMOVING|NOPREVIEW);
+			skin_webvr_act_as_gyro_in_portrait_mode(true);
+			if(scene.count GT 1 AND skin_settings.webvr_prev_next_hotspots,
+				set(hotspot[skin_webvr_prev_scene].visible, true);
+				set(hotspot[skin_webvr_next_scene].visible, true);
+				set(events[skin_webvr_and_gyro_events].onviewchange, skin_webvr_menu_following());
+			);
+		  ,
+			if(skin_settings.loadscene_flags_backup !== null, copy(skin_settings.loadscene_flags, skin_settings.loadscene_flags_backup); );
+			if(layer[webvr_rotate_to_landscape_request], tween(layer[webvr_rotate_to_landscape_request].alpha, 0.0, 0.0); );
+			set(hotspot[skin_webvr_prev_scene].visible, false);
+			set(hotspot[skin_webvr_next_scene].visible, false);
+			set(events[skin_webvr_and_gyro_events].onviewchange, null);
+		);
+	</action>
+    <action name="skin_webvr_act_as_gyro_in_portrait_mode" scope="local" args="setupcall">
+        if(device.mobile AND webvr.isenabled,
+			div(aspect, stagewidth, stageheight);
+			if(aspect != lastaspect OR setupcall == true,
+				copy(lastaspect, aspect);
+				if(stagewidth GT stageheight,
+        <!-- landscape orientation - use stereo rendering and a direct/fast gyro sensor mode -->
+        set(display.stereo, true);
+					set(webvr.mobilevr_sensor_mode, 3);
+					webvr.update();
+					tween(layer[webvr_rotate_to_landscape_request].alpha, 0.0, 0.0);
+				  ,
+        <!-- portrait orientation - use normal rendering and a smoother/slower gyro sensor mode -->
+        set(display.stereo, false);
+					set(webvr.mobilevr_sensor_mode, 1);
+					webvr.update();
+					tween(layer[webvr_rotate_to_landscape_request].alpha, 1.0);
+					delayedcall(3.0, tween(layer[webvr_rotate_to_landscape_request].alpha, 0.0, 1.0); );
+				);
+			);
+		  ,
+			set(lastaspect, 0);
+		);
+    </action>                     
+    <!-- floating/following VR hotspots -->
+    <action name="skin_webvr_menu_following" type="Javascript" devices="html5">
+        <![CDATA[
+		var hs1 = krpano.get("hotspot[skin_webvr_prev_scene]");
+		var hs2 = krpano.get("hotspot[skin_webvr_next_scene]");
+		if(!hs1.hovering && !hs2.hovering)
+		{
+			var f = 0.01;	// following speed factor
+			var h = krpano.view.hlookat;
+			var v = krpano.view.vlookat;
+			var hsh = hs1.ath;
+			var hsv = hs1.atv;
+			h   = (h  -(h|0))   + (((h|0)  +360180)%360) - 180.0;
+			v   = (v  -(v|0))   + (((v|0)  +360180)%360) - 180.0;
+			hsh = (hsh-(hsh|0)) + (((hsh|0)+360180)%360) - 180.0;
+			var dh = h - hsh;
+			dh += (dh > 180) ? -360 : (dh < -180) ? 360 : 0
+			hsh += dh*f;
+			var a = Math.abs(v - hsv) / 90.0;
+			a = 1.0 * Math.max(1.0 - 2.0*Math.sqrt(a), 0);
+			v = v + 55.0 - v*1.5;
+			hsv = hsv*(1.0 - f) + v*f;
+			hs1.ath = hs2.ath = hsh;
+			hs1.atv = hs2.atv = hsv;
+			hs1.alpha = hs2.alpha = a;
+		}
+	]]>
+    </action>
+    <!-- reload the scene when there is a special image for VR -->
+    <action name="skin_reloadscene_webvr" scope="local">
+		delayedcall(0.1,
+			if(scene[get(xml.scene)].havevrimage,
+				copy(skin_settings.keeplookingdirection_backup, skin_settings.webvr_keeplookingdirection);
+				set(skin_settings.webvr_keeplookingdirection, true);
+				loadscene(get(xml.scene), null, MERGE|KEEPVIEW|KEEPMOVING|KEEPPLUGINS|KEEPHOTSPOTS, BLEND(0.5));
+				copy(skin_settings.webvr_keeplookingdirection, skin_settings.keeplookingdirection_backup);
+				delete(skin_settings.keeplookingdirection_backup);
+			);
+		);
+	</action>
+    <action name="skin_lookat" scope="local" args="h, v, fov">
+        if(webvr.isenabled,
+        <!-- adjust the VR prev/next hotspots for the view change -->
+        calc(hlookat_offset, h - view.hlookat);
+			add(hotspot[skin_webvr_prev_scene].ath, hlookat_offset);
+			add(hotspot[skin_webvr_next_scene].ath, hlookat_offset);
+		);
+		if(plugin[skin_gyro].isavailable AND plugin[skin_gyro].enabled,
+        <!-- reset the gyro tracking -->
+        plugin[skin_gyro].resetsensor(get(h));
+		);
+        <!-- change the view -->
+        lookat(get(h), get(v), get(fov));
+    </action>
+    <!-- determine the visibility of the buttons and calculate their positions -->
+    <action name="skin_arrange_buttons" scope="local">
+		calc(show_selbuttons, scene.count GT 1);
+		calc(show_thumbutton, skin_settings.thumbs == true);
+		calc(show_mapbutton,  skin_settings.maps == true);
+		calc(show_gyrobutton, plugin[skin_gyro].isavailable == true AND (view.vlookatrange == 180 OR global.lpinfo.scene === xml.scene));
+		calc(show_vrbutton,   webvr.isavailable == true);
+		calc(show_fsbutton,   device.fullscreensupport == true);
+
+		set(lpos,6);
+		set(cpos,0);
+		if(show_gyrobutton, dec(cpos,20));
+		if(show_vrbutton OR plugin[webvr].mobilevr_fake_support == true, dec(cpos,24));
+		set(rpos,6);
+
+		calc(show_dirbuttons, !device.mobile AND ((area.pixelwidth + 2*cpos) GT 520) );
+
+		copy(layer[skin_btn_navi].visible, show_dirbuttons);
+
+		copy(layer[skin_btn_prev].visible, show_selbuttons);
+		copy(layer[skin_btn_next].visible, show_selbuttons);
+		if(show_selbuttons, inc(lpos,44); inc(rpos,44); );
+
+		copy(layer[skin_btn_thumbs].visible, show_thumbutton);
+		copy(layer[skin_btn_thumbs].x, lpos);
+		if(show_thumbutton, inc(lpos,40));
+
+		copy(layer[skin_btn_map].visible, show_mapbutton);
+		copy(layer[skin_btn_map].x, lpos);
+		if(show_mapbutton, inc(lpos,40));
+
+		if(show_dirbuttons,
+			copy(layer[skin_btn_navi].x, cpos);
+			inc(cpos,140);
+
+			set(layer[skin_btn_gyro].align, center);
+			copy(layer[skin_btn_gyro].visible, show_gyrobutton);
+			copy(layer[skin_btn_gyro].x, cpos);
+			if(show_gyrobutton, inc(cpos,48));
+
+			set(layer[skin_btn_vr].align, center);
+			copy(layer[skin_btn_vr].visible, show_vrbutton);
+			copy(layer[skin_btn_vr].x, cpos);
+			if(show_vrbutton, inc(cpos,80));
+		  ,
+			set(layer[skin_btn_gyro].align, left);
+			copy(layer[skin_btn_gyro].visible, show_gyrobutton);
+			copy(layer[skin_btn_gyro].x, lpos);
+			if(show_gyrobutton, inc(lpos,40));
+
+			set(layer[skin_btn_vr].align, left);
+			copy(layer[skin_btn_vr].visible, show_vrbutton);
+			copy(layer[skin_btn_vr].x, lpos);
+			if(show_vrbutton, inc(lpos,80));
+		);
+
+		copy(layer[skin_btn_hide].x, rpos);
+		inc(rpos,40);
+
+		copy(layer[skin_btn_fs].visible, show_fsbutton);
+		copy(layer[skin_btn_fs].x, rpos);
+		if(show_fsbutton, inc(rpos,40));
+	</action>
+    <action name="skin_loadscene" scope="local" args="newscenenameorindex, blendmode">
+		if(webvr.isenabled AND scene.count GT 1,
+			set(hotspot[skin_webvr_prev_scene].visible, false);
+			set(hotspot[skin_webvr_next_scene].visible, false);
+		);
+
+		calc(parentname, 'skin_thumb_' + scene[get(newscenenameorindex)].thumbindex);
+		if(scene[get(newscenenameorindex)].thumburl AND scene[get(newscenenameorindex)].skipthumb != true AND layer[get(parentname)],
+			set(layer[skin_thumbborder], parent=get(parentname), visible=true);
+		  ,
+			set(layer[skin_thumbborder].visible, false);
+		);
+		
+		layer[skin_thumbs].scrolltocenter(get(scene[get(newscenenameorindex)].thumbx), get(scene[get(newscenenameorindex)].thumby));
+		loadscene(get(scene[get(newscenenameorindex)].name), null, get(skin_settings.loadscene_flags), get(blendmode));
+	</action>
+    <action name="skin_deeplinking_update_url" scope="local" args="delay">
+		if(skin_settings.deeplinking AND (!webvr OR webvr.isenabled === false) AND global.lpinfo === null,
+			delayedcall(skin_deeplinking_update, calc(delay == null ? 0.1 : delay), skin_deeplinking_update_url_process() );
+		);
+	</action>
     <!-- Alternative small screen layout for mobile devices (override/extend settings) -->
     <krpano devices="mobile">
         <layer name="skin_scroll_window" y="64" y_opened="64" y_closed="-4">
@@ -121,7 +351,6 @@
         <layer name="skin_thumbborder" scale="1" />
         <style name="skin_thumbtext_style" css="text-align:center; color:#FFFFFF; font-family:Arial; font-weight:bold; font-size:20px;" />
     </krpano>
-
     <!-- Skin Actions -->
     <action name="skin_startup">
 		if(device.mobile == false,
@@ -487,7 +716,6 @@
 			set(events[skin_events].onmouseup, null);
 		  );
     </action>
-    
     <action name="skin_changecontrolmode">
 		switch(control.mousetype, moveto, drag2d);
 		switch(control.touchtype, moveto, drag2d);
@@ -539,4 +767,48 @@
 		add(new_hlookat, view.hlookat, 123.0);
 		tween(view.hlookat, get(new_hlookat), distance(100,0.8));
     </action>
+    <action name="skin_followmouse_init" scope="private:skinfollowmouse" autorun="onstart" devices="desktop.and.no-touch">
+		if(global.skin_settings.followmousecontrol,
+			set(followspeed, 0.05);
+			set(followrange, 10);
+			set(followfactor, 1.0);
+			set(track_ry, 0);
+			set(track_rx, 0);
+			set(global.events[skin_followmouse].keep, true);
+			set(global.events[skin_followmouse].onviewchanged, set(global.view.haschanged,true); );
+			set(global.events[skin_followmouse].onviewchange, skin_followmouse_onviewchange() );
+			set(global.events[skin_followmouse].onmousedown, scope(private:skinfollowmouse, stopdelayedcall(followmouse_reenable); tween(followfactor,0.0,0.2); ); );
+			set(global.events[skin_followmouse].onmouseup, scope(private:skinfollowmouse, delayedcall(followmouse_reenable, 1.0, tween(followfactor,1.0,3.0) ); ); );
+		  );
+	</action>
+    <action name="skin_followmouse_onviewchange" scope="private:skinfollowmouse">
+		if(global.mouse.x != 0 AND global.mouse.y != 0,
+			Math.tan(zoomscale, calc(global.view.vfov * 0.5 * Math.PI / 180.0));
+			calc(zoomscale, 1.0 / zoomscale);
+			Math.max(zoomscale, 1.0);
+			calc(new_ry, followfactor/zoomscale * followrange * (global.mouse.x / global.stagewidth - 0.5));
+			calc(new_rx, followfactor/zoomscale * followrange * (global.mouse.y / global.stageheight - 0.5));
+			calc(track_ry, track_ry*(1.0-followspeed) + new_ry*followspeed);
+			calc(track_rx, track_rx*(1.0-followspeed) + new_rx*followspeed);
+			copy(global.view.ry, track_ry);
+			copy(global.view.rx, track_rx);
+		);
+	</action>
+    <!-- A helper script for getting into fullscreen mode on the iPhone. -->
+    <events name="iphone_fullscreen_swipe" keep="true" devices="iphone" oniphonefullscreen="iphone_fullscreen_swipe();" />
+    <action name="iphone_fullscreen_swipe" scope="localonly">
+		if(global.display.iphonefullscreen GT 0,
+			if(!global.layer[iphone_fullscreen_info],
+				addlayer('iphone_fullscreen_info', infolayer);
+				set(infolayer, type=text, css='color:#FFFFFF; font-size:26px; font-weight:bold; text-align:center;', txtshadow='0 0 8 0x000000 1', mergedalpha=false, bgcolor=0x000000, bgalpha=0.7, bgcapture=true, align=lefttop, x=0, y=0, width=100%, height=100%, vcenter=true, keep=true, zorder=9999, safearea=false);
+				if(global.display.iphonefullscreen == 1,
+					set(infolayer.html, '[span style="font-size:60px;"]⇡[/span][br]Swipe Up');
+				  ,
+					set(infolayer.html, '[span style="font-size:60px;"]⇣ ⇡[/span][br]Swipe Down and Up');
+				);
+			);
+		  ,
+			removelayer('iphone_fullscreen_info');
+		);
+	</action>
 </krpano>

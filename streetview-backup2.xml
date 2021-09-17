@@ -1,4 +1,4 @@
-<krpano>
+<krpano debugmode="true">
     <data name="streetview_css_underline">
         a {
                 text-align:left;
@@ -27,9 +27,11 @@
             text-decoration: none;
         }
     </data>
+    
     <style name="streetview_arrow" keep="false" edge="bottom" width="60" scale="0.5" distorted="true" capture="false" crop="0|0|84|150" onovercrop="84|0|84|150" ondowncrop="0|0|84|150" inverserotation="true" onhover="showtext(get(linkedpano));" onclick="streetview_gotopano(get(linkedpano));" />
 
     <style name="streetview_arrow_others2" crop="0|0|84|190" onovercrop="84|0|84|190" ondowncrop="0|0|84|190" />
+
     <events onkeydown="streetview_checkkey();" onviewchange="streetview_arrowupdate();" onnewpano="
                 streetview_updatehotspotsanddirection();
                 streetview_view_restore();
@@ -41,20 +43,22 @@
                     action.removearrayitem(TracePanoNotInBatch);
                 );
                 " />
+                
     <layer name="streetview_websitelink" keep="true" url="%FIRSTXML%/plugins/textfield.swf" align="left" x="75" selectable="false" handcursor="true" background="false" css="data:streetview_css_normal" textshadow="1" onover="set(css,data:streetview_css_underline);" onout="set(css,data:streetview_css_normal);" parent="layer[skin_control_bar]" />
 
-    <layer name="streetview_btn_print" keep="true" url="%FIRSTXML%/plugins/streetview/images/print.png" style="skin_glow" align="left" x="70" scale="0.5" onclick="js(window.print())" parent="layer[skin_control_bar]" visible="false" />
+    <layer name="streetview_btn_print" keep="true" style="skin_base|skin_glow" crop="128|192|64|64" align="left" x="70" scale="0.5" onclick="js(window.print())" parent="layer[skin_control_bar]" visible="false" />
 
     <layer name="streetview_additionallink" keep="true" url="%FIRSTXML%/plugins/textfield.swf" align="center" edge="left" x="175" selectable="false" handcursor="true" background="false" css="data:streetview_css_normal" textshadow="1" onover="set(css,data:streetview_css_underline);" onout="set(css,data:streetview_css_normal);" parent="layer[skin_control_bar]" />
 
     <layer name="streetview_logoutlink" keep="true" url="%FIRSTXML%/plugins/textfield.swf" align="center" endge="right" x="-165" selectable="false" handcursor="true" background="false" css="data:streetview_css_normal" textshadow="1" onover="set(css,data:streetview_css_underline);" onout="set(css,data:streetview_css_normal);" parent="layer[skin_control_bar]" visible="false" />
+    
     <layer name="streetview_tm_control" keep="true" type="container" align="right" x="100" width="215" height="40" parent="skin_control_bar" visible="false" zorder="50">
 
         <layer name="streetview_tm_label" keep="true" url="%FIRSTXML%/plugins/textfield.swf" align="right" x="150" selectable="false" handcursor="false" background="false" css="data:streetview_css_normal" textshadow="1" />
 
-        <layer name="streetview_tm_arrow_left" keep="true" style="skin_glow" url="%FIRSTXML%/plugins/streetview/images/tm_arrow_left.png" align="right" x="123" scale="0.5" ondown2="js(krpanoPluginsStuff.streetview.setPrevBatch());" />
+        <layer name="streetview_tm_arrow_left" keep="true" style="skin_base|skin_glow" crop="128|128|64|64" align="right" x="120" scale="0.35" ondown2="js(krpanoPluginsStuff.streetview.setPrevBatch());" />
 
-        <layer name="streetview_tm_arrow_right" keep="true" style="skin_glow" url="%FIRSTXML%/plugins/streetview/images/tm_arrow_right.png" align="right" x="-10" scale="0.5" ondown2="js(krpanoPluginsStuff.streetview.setNextBatch());" />
+        <layer name="streetview_tm_arrow_right" keep="true" style="skin_base|skin_glow" crop="128|64|64|64" align="right" x="-10" scale="0.35" ondown2="js(krpanoPluginsStuff.streetview.setNextBatch());" />
 
     </layer>
     <action name="streetview_startup">
@@ -186,7 +190,7 @@
             set(sv.startpano_heading, %2);
         );
         <!-- set(sv.temp_pano_url,  %FIRSTXML%/plugins/streetview/ajax/kgen.php?sv=%1); -->
-        set(sv.temp_pano_url,  http://players.applied-streetview.com/Timeline/plugins/streetview/ajax/kgen.php?sv=%1);
+        set(sv.temp_pano_url,  https://players.applied-streetview.com/Timeline/plugins/streetview/ajax/kgen.php?sv=%1);
 
         txtadd(sv.temp_pano_url, get(sv.temp_pano_url), &amp;tiles_dir_struct=, get(sv.tiles_dir_struct));
 
