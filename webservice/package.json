@@ -1,0 +1,47 @@
+{
+    "name": "webservice",
+    "version": "1.0.0",
+    "description": "webservice is the ultimate backend solution",
+    "main": "src/server.js",
+    "scripts": {
+        "setup": "npm install && npm update",
+        "start": "node src/server.js",
+        "start:dev": "nodemon src/server.js",
+        "migration:init": "migrate init --migrations-dir ./src/migrations",
+        "migration:create": "migrate create --migrations-dir ./src/migrations --template-file ./src/migrations/.template.js",
+        "migration:list": "migrate list --migrations-dir ./src/migrations",
+        "migration:up": "migrate up --migrations-dir ./src/migrations --env ./.env",
+        "migration:down": "migrate down --migrations-dir ./src/migrations --env ./.env"
+    },
+    "keywords": [
+        "express",
+        "backend",
+        "webservice"
+    ],
+    "license": "UNLICENSED",
+    "dependencies": {
+        "cookie-parser": "^1.4.4",
+        "cors": "^2.8.5",
+        "express": "^4.17.1",
+        "express-custom-error": "^1.8.4",
+        "has-keys": "^0.1.0",
+        "helmet": "^3.21.2",
+        "http-status": "^1.3.2",
+        "mandatoryenv": "^1.1.1",
+        "migrate": "^1.6.2",
+        "module-alias": "^2.2.2",
+        "morgan": "^1.9.1",
+        "nodemon": "^2.0.12",
+        "pg": "^7.12.1",
+        "pg-hstore": "^2.3.3",
+        "rotating-file-stream": "^1.4.6",
+        "sequelize": "^5.19.2"
+    },
+    "_moduleAliases": {
+        "@root": "src",
+        "@controllers": "src/controllers",
+        "@models": "src/models",
+        "@util": "src/util",
+        "@routes": "src/routes"
+    }
+}
