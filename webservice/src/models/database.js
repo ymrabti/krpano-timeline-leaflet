@@ -6,10 +6,8 @@ const {
     DB_PASSWORD
 } = process.env;
 
-
-
 const Sequelize = require('sequelize');
-console.log(DB_DATABASE);
+
 const db = new Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
     host: DB_HOST,
     pool: {

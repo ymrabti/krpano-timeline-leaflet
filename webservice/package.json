@@ -35,7 +35,8 @@
         "pg": "^7.12.1",
         "pg-hstore": "^2.3.3",
         "rotating-file-stream": "^1.4.6",
-        "sequelize": "^5.19.2"
+        "sequelize": "^5.19.2",
+        "xml": "^1.0.1"
     },
     "_moduleAliases": {
         "@root": "src",

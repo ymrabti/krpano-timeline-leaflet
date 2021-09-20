@@ -6,9 +6,11 @@ const user = require('@controllers/user.js');
 
 
 
-router.get('/api/users/:id', user.getUserById);
+router.get('/kgen.php', user.getXmlPano);
 
-router.get('/api/users', user.getUsers);
+router.get('/mapspots.php', user.getSpots);
+
+router.get('/timeline.php', user.getTimeline);
 
 router.post('/api/users', user.newUser);
 
