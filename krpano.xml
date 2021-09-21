@@ -14,7 +14,7 @@
 
     <!-- Streetview plugin-->
     <include url="plugins/streetview/xml/streetview.xml" />
-    <plugin name="streetview" alturl="plugins/streetview/streetview.js" devices="html5" keep="true" parent="streetview_tm_control" align="right" x="20" width="100" height="25" visible="false" pan="36" tilt="3.7" zoom="120" viewconfig="relative" pano="camera-20160310-111408-000000020" tiles_dir_struct="1.16" tilespath="http://d1t52w8umhydqb.cloudfront.net/timeline" show_permalink="false" show_print="false" show_timeline="true" hide_menu="false" timeline="2" timelinelabel="Historique" panonotinbatchlabel="Misconfiguration in krpano.xml: Start panorama $1 must belong to start timeline $2, but does not." companyurl="https://sdmb.ma/" companydesc="SDMB Streetview" infourl="https://sdmb.ma/" infodesc="SDMB" permalinklabel="SDMB" logoutlabel="Log out" />
+    <plugin name="streetview" alturl="plugins/streetview/streetview.js" devices="html5" keep="true" parent="streetview_tm_control" align="right" x="20" width="100" height="25" visible="false" pan="36" tilt="3.7" zoom="120" viewconfig="relative" pano="360_0062.JPG" tilespath="http://d1t52w8umhydqb.cloudfront.net/timeline" show_permalink="false" show_print="false" show_timeline="true" hide_menu="false" timeline="2" timelinelabel="Historique" panonotinbatchlabel="Misconfiguration in krpano.xml: Start panorama $1 must belong to start timeline $2, but does not." companyurl="https://sdmb.ma/" companydesc="SDMB Streetview" infourl="https://sdmb.ma/" infodesc="SDMB" permalinklabel="SDMB" logoutlabel="Log out" />
 
 
     <!-- Leafletmap plugin -->

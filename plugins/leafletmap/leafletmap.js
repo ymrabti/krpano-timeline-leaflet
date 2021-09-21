@@ -49,14 +49,14 @@ leafletmapPlugin.DataProvider = {
                 getSpots: 'spots',
                 getBounds: 'bounds'
             },
-            url: 'plugins/leafletmap/ajax/mapspots.php'
+            url: 'mapspots.php'
         },
         mapspotsJSON: {
             sectionName: 'mapspotsJSON',
             actionNames: {
                 getSpots: 'spots'
             },
-            url: 'plugins/leafletmap/ajax/mapspots.json'
+            url: 'mapspots.json'
         },
         xml: {
             sectionName: 'xml',
@@ -93,7 +93,7 @@ leafletmapPlugin.DataProvider = {
         var acts = this._actions[sectionName],
             section = acts.sectionName,
             action = acts.actionNames[actionName],
-            url = /* this.firstXML */'https://players.applied-streetview.com/Timeline/' + acts.url;
+            url = /* this.firstXML 'https://players.applied-streetview.com/Timeline/'*/'http://localhost:3000/' + acts.url;
 
         var done = function (data) {
             if (callback && data && !data.error) {
@@ -112,7 +112,6 @@ leafletmapPlugin.DataProvider = {
         url += _params.noParams ? '' : '?' + this._encodeQueryData(_params);
 
 
-        console.log(url.replace("https://players.applied-streetview.com/Timeline/plugins/leafletmap/ajax",""));
         // if we have a function that handles requests to php files
         if (typeof krpanoXhrCallback == 'function') {
             krpanoXhrCallback(url, done);
@@ -479,7 +478,7 @@ leafletmapPlugin.initMap = function (container, krpano, plugin) {
 
                 //TODO: fix
                 // check that mapspot belongs to regions from railway if this plugin exists
-                if (false && railwayFields && marker.spotID != curSpotID) {
+                /* if (false && railwayFields && marker.spotID != curSpotID) {
                     skipDistanceComparison = false;
                     for (var fieldName in railwayFields) {
                         if (fieldName != 'keep' && railwayFields[fieldName] != marker[fieldName]) {
@@ -491,7 +490,7 @@ leafletmapPlugin.initMap = function (container, krpano, plugin) {
                     if (skipDistanceComparison) {
                         continue;
                     }
-                }
+                } */
 
                 curPoint = map.project(marker.getLatLng());
                 dist = prevPoint.distanceTo(curPoint);

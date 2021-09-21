@@ -58,7 +58,6 @@
 
     </layer>
     <action name="streetview_startup">
-        copy(sv.tiles_dir_struct, plugin[streetview].tiles_dir_struct);
         copy(sv.tilespath, plugin[streetview].tilespath);
 
         streetview_add_plugin_stuff();
@@ -186,9 +185,8 @@
             set(sv.startpano_heading, %2);
         );
     
-        set(sv.temp_pano_url,  https://players.applied-streetview.com/Timeline/plugins/streetview/ajax/kgen.php?sv=%1);
+        set(sv.temp_pano_url,  http://localhost:3000/kgen.php?sv=%1);
 
-        txtadd(sv.temp_pano_url, get(sv.temp_pano_url), &amp;tiles_dir_struct=, get(sv.tiles_dir_struct));
 
         if(plugin[railway],
             txtadd(sv.temp_pano_url, get(sv.temp_pano_url), &amp;others2=1);
