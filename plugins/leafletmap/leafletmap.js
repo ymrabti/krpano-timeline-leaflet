@@ -426,7 +426,7 @@ leafletmapPlugin.initMap = function (container, krpano, plugin) {
                 marker.division = spot.division;
                 marker.subregion = spot.subregion;
                 marker.subdivision = spot.subdivision;
-                marker.batch = spot.batch;
+                marker.REC_TIME = spot.REC_TIME;
 
                 // add marker to storage-object
                 markers[spot.id] = marker;
@@ -448,7 +448,7 @@ leafletmapPlugin.initMap = function (container, krpano, plugin) {
 
             var railwayFields = krpano.get('lm.request_spots_params.railway'),
                 streetviewPlugin = krpano.plugin.getItem('streetview'),
-                timelineValue = leafletmapPlugin.DataProvider.getTimelineValue().batch;
+                timelineValue = leafletmapPlugin.DataProvider.getTimelineValue().REC_TIME;
 
 
             for (var i = 0, len = markers.length; i < len; i++) {
@@ -467,9 +467,9 @@ leafletmapPlugin.initMap = function (container, krpano, plugin) {
                 curSpotID = getCurSpotID();
 
                 // check that mapspot is a member
-                // of current batch if streetview.show_timeline==true
+                // of current b_atch if streetview.show_timeline==true
                 if (typeof timelineValue != 'undefined' && marker.spotID != curSpotID) {
-                    if (marker.batch != timelineValue) {
+                    if (marker.REC_TIME != timelineValue) {
                         featureGroup.removeLayer(marker);
                         continue;
                     }
@@ -566,13 +566,13 @@ leafletmapPlugin.initMap = function (container, krpano, plugin) {
 
 
     // add getTimelineValue function to DataProvider:
-    // - if streetview.show_timeline="true" then return object with batch field to be added
+    // - if streetview.show_timeline="true" then return object with b_atch field to be added
     //   to params of requests
     var streetviewPluginSettings = krpano.plugin.getItem('streetview');
     leafletmapPlugin.DataProvider.getTimelineValue = function () {
         if (streetviewPluginSettings.show_timeline == 'true') {
             var timelineValue = +(streetviewPluginSettings.timeline || 0);
-            return { batch: timelineValue };
+            return { REC_TIME: timelineValue };
         } else {
             return {};
         }
@@ -632,6 +632,7 @@ leafletmapPlugin.initMap = function (container, krpano, plugin) {
         //center: getCurSpotLatLng(),
         zoom: +plugin.mapoptions.zoom,
         zoomControl: true,
+        maxZoom: +plugin.mapoptions.maxzoom,
         keyboard: false, layers: [baseTree[0].children[0].layer],
         isLocalVersion: isLocalVersion
     }).on('zoomend', skipMarkers);
@@ -937,7 +938,7 @@ leafletmapPlugin.invalidateMapSize = function () {
 
 /**
  *
- * Change L.Map class:
+ * Change L. Map class:
  *   fire once "delayedCenterChanged" event on map
  *   if it's center was not changed for 1 second
  *   since last changing (zooming or panning)
