@@ -4,7 +4,7 @@ require('module-alias/register');
 
 
 // Patches
-const {inject, errorHandler} = require('express-custom-error');
+const { inject, errorHandler } = require('express-custom-error');
 inject(); // Patch express in order to use async / await syntax
 
 // Require Dependencies
@@ -36,8 +36,8 @@ const app = express();
 
 
 // Configure Express App Instance
-app.use(express.json( { limit: '50mb' } ));
-app.use(express.urlencoded( { extended: true, limit: '10mb' } ));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Configure custom logger middleware
 app.use(logger.dev, logger.combined);
@@ -55,10 +55,7 @@ app.use(helmet());
 // Assign Routes
 
 let router = require('./routes/router');
-
 app.use('/', router);
-
-
 // Handle errors
 app.use(errorHandler());
 
@@ -72,5 +69,11 @@ app.use(errorHandler());
 // Open Server on selected Port
 app.listen(
     PORT,
-    () => console.info('Server listening on port ', PORT)
+    () => {
+
+        const all_routes = require('express-list-endpoints');
+        console.log("global routes :");
+        console.log(all_routes(router));
+        console.info('Server listening on port ', PORT);
+    }
 );

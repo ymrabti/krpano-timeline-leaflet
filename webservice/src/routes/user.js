@@ -12,10 +12,9 @@ router.get('/mapspots.php', user.getSpots);
 
 router.get('/timeline.php', user.getTimeline);
 
-router.post('/api/users', user.newUser);
+router.post('/panos', user.newSurveys);
 
 router.delete('/users/:id', user.deleteUser);
-
 router.put('/api/users', user.updateUser);
 
 

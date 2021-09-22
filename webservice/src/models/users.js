@@ -4,7 +4,7 @@ const Sequelize = require('sequelize');
 const db = require('@models/database.js');
 
 
-const users = db.define('StreetViewPanos', {
+const StreetViewPanos = db.define('StreetViewPanos', {
     id: {
         primaryKey: true,
         type: Sequelize.NUMBER
@@ -12,7 +12,7 @@ const users = db.define('StreetViewPanos', {
     geom: {
         type: Sequelize.GEOMETRY
     },
-    rec_time: {
+    REC_TIME: {
         type: Sequelize.DATE
     },
     y: {
@@ -33,4 +33,4 @@ const users = db.define('StreetViewPanos', {
 })
 
 
-module.exports = users;
+module.exports = {StreetViewPanos};
