@@ -1,6 +1,6 @@
 const status = require('http-status');
 
-const models = require('@models/users.js');
+const models = require('@models/streetviewModel.js');
 
 const LatLon = require('geodesy/latlon-spherical');
 
@@ -15,23 +15,22 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 module.exports = {
     async getXmlPano(req, res) {
-        if (!has(req.query, 'sv', 'REC_TIME')) throw { code: status.BAD_REQUEST, message: 'You must specify the streetview and REC_TIME' };
+        if (!has(req.query, 'sv', 'rec_time')) throw { code: status.BAD_REQUEST, message: 'You must specify the streetview and rec_time' };
 
-        var where = {};
-        let { sv, REC_TIME, new_batch, old_lat, old_lng } = req.query;
+        let { sv, rec_time, new_batch, old_lat, old_lng } = req.query;
         if (('null' != sv) && new_batch && old_lat && old_lat) {
             where = {
-                y: { [Op.eq]: parseFloat(old_lat) },
-                x: { [Op.eq]: parseFloat(old_lng) }
+                latitude: { [Op.eq]: parseFloat(old_lat) },
+                longitude: { [Op.eq]: parseFloat(old_lng) }
             }
         }
 
-        var dataf = await models.StreetViewPanos.findOne({
-            attributes: ['id', ['images', 'pano'], ['y', 'latitude'], ['x', 'longitude'], ['bearing', 'heading'], ['batch', 'REC_TIME'], 'dist'],
-            where: { images: sv/* , REC_TIME */ }
+        var dataf = await models.Panos.findOne({
+            attributes: ['id', 'pano', 'latitude', 'longitude', 'heading', 'rec_time', 'dist'],
+            where: { pano: sv/* , rec_time */ }
         });
 
-        if (!dataf) throw { code: status.BAD_REQUEST, message: 'not found' };
+        if (!dataf) throw { code: status.NOT_FOUND, message: 'Pano NOT FOUND 404' };
 
         let dataValues = dataf.dataValues;
         let panoname = dataValues.pano.replace(".JPG", '') + "_Stitch_XHC";
@@ -59,26 +58,20 @@ module.exports = {
             throw { code: status.BAD_REQUEST, message: 'You must specify the Bounds' };
         let { lat1, lat2, lng1, lng2, rec_time } = req.query;
 
-        let data = await models.StreetViewPanos.findAll({
-            attributes: ['id', ['images', 'pano'], ['y', 'latitude'], ['x', 'longitude'], ['bearing', 'heading'], ['batch', 'REC_TIME'], 'dist'],
+        let data = await models.Panos.findAll({
+            attributes: ['id', 'pano', 'latitude', 'longitude', 'heading', 'rec_time', 'dist'],
             where: {
-                y: { [Op.between]: [parseFloat(lat1), parseFloat(lat2)] },
-                x: { [Op.between]: [parseFloat(lng1), parseFloat(lng2)] },
-                // REC_TIME:REC_TIME
+                latitude: { [Op.between]: [parseFloat(lat1), parseFloat(lat2)] },
+                longitude: { [Op.between]: [parseFloat(lng1), parseFloat(lng2)] },
+                // rec_time:rec_time
             },
-            order: ['images']
+            order: ['pano']
         });
         res.json(data);
     },
     async getTimeline(req, res) {
         res.json([{ "id": "1", "value": "2016-06-20" }, { "id": "2", "value": "2016-03-10" }, { "id": "3", "value": "2015-05-18" }]);
     },
-    /* async newSurveys(req, res) {
-        let { name, email } = req.body;
-
-        await modele.create({ name, email });
-
-    }, */
     async newSurveys(req, res) {
         let radios = 15;
         let cercles = [];
@@ -110,14 +103,14 @@ module.exports = {
                     if (radios > distance && _ksd === 0) {
                         // add new pano
                         panos.push({
-                            id_pano: uuidv4(),
+                            id: uuidv4(),
                             pano: curr.pano,
                             latitude: curr.latitude,
                             longitude: curr.longitude,
                             heading: curr.heading,
                             elevation: curr.elevation,
                             dist: distance,
-                            REC_TIME: curr.REC_TIME,
+                            rec_time: curr.REC_TIME,
                             timestamp: curr.timestamp,
                             cercle_id: proche.OBJECTID
                         });
@@ -147,25 +140,49 @@ module.exports = {
                     });
                     // add center of cercle as new pano
                     panos.push({
-                        id_pano: uuidv4(),
+                        id: uuidv4(),
                         pano: curr.pano,
                         latitude: curr.latitude,
                         longitude: curr.longitude,
                         heading: curr.heading,
                         elevation: curr.elevation,
                         dist: 0,
-                        REC_TIME: curr.REC_TIME,
+                        rec_time: curr.REC_TIME,
                         timestamp: curr.timestamp,
-                        cercle_id: curr.OBJECTID
+                        cercle_id: curr.OBJECTID,
                     });
                 }
                 return acc;
             }, []);
         cercles = cercles.map((cercle, index, array) => ({
             ...cercle,
-            next: index !== array.length - 1 ? array[index + 1].id_cercle : null ,
-            prev: index !== 0 ? array[index - 1].id_cercle: null
+            next_pano: index !== array.length - 1 ? array[index + 1].id_cercle : null,
+            prev_pano: index !== 0 ? array[index - 1].id_cercle : null,
+            createdat: new Date().getTime(),
+            updatedat: new Date().getTime(),
+            stampuui: cercle.latitude.toString().replace('.', '') +
+                cercle.longitude.toString().replace('.', '')
         }));
+        var errorscercles = 0;
+        cercles.forEach((element,ind) => {
+            models.Cercles.create(element)
+                .catch(err => { errorscercles++; console.log("Error at : stampuui"+element.stampuui); });
+        });
+        var errorspanos = 0;
+        panos.forEach(element => {
+            models.Panos.create({
+                ...element,
+                createdat: new Date().getTime(),
+                updatedat: new Date().getTime(),
+                stampuui: element.latitude.toString().replace('.', '') +
+                    element.longitude.toString().replace('.', '') +
+                    element.pano
+            })
+                .catch(err=>{errorspanos++;console.log("Error at : stampuui"+element.stampuui);});
+        });
+        setTimeout(() => {
+            console.log(errorscercles, errorspanos);
+        }, 5000);
         res.json({
             status: true, message: {
                 cercles,
@@ -183,7 +200,7 @@ module.exports = {
 
         let { id, name, email } = req.body;
 
-        await models.StreetViewPanos.updateUser({ name, email }, { where: { id } });
+        await models.Panos.updateUser({ name, email }, { where: { id } });
 
         res.json({ status: true, message: 'User updated' });
     },
@@ -193,7 +210,7 @@ module.exports = {
 
         let { id } = req.params;
 
-        await models.StreetViewPanos.destroy({ where: { id } });
+        await models.Panos.destroy({ where: { id } });
 
         res.json({ status: true, message: 'User deleted' });
     }

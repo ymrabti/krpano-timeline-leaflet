@@ -426,7 +426,7 @@ leafletmapPlugin.initMap = function (container, krpano, plugin) {
                 marker.division = spot.division;
                 marker.subregion = spot.subregion;
                 marker.subdivision = spot.subdivision;
-                marker.REC_TIME = spot.REC_TIME;
+                marker.rec_time = spot.rec_time;
 
                 // add marker to storage-object
                 markers[spot.id] = marker;
@@ -448,7 +448,7 @@ leafletmapPlugin.initMap = function (container, krpano, plugin) {
 
             var railwayFields = krpano.get('lm.request_spots_params.railway'),
                 streetviewPlugin = krpano.plugin.getItem('streetview'),
-                timelineValue = leafletmapPlugin.DataProvider.getTimelineValue().REC_TIME;
+                timelineValue = leafletmapPlugin.DataProvider.getTimelineValue().rec_time;
 
 
             for (var i = 0, len = markers.length; i < len; i++) {
@@ -469,7 +469,7 @@ leafletmapPlugin.initMap = function (container, krpano, plugin) {
                 // check that mapspot is a member
                 // of current b_atch if streetview.show_timeline==true
                 if (typeof timelineValue != 'undefined' && marker.spotID != curSpotID) {
-                    if (marker.REC_TIME != timelineValue) {
+                    if (marker.rec_time != timelineValue) {
                         featureGroup.removeLayer(marker);
                         continue;
                     }
@@ -572,7 +572,7 @@ leafletmapPlugin.initMap = function (container, krpano, plugin) {
     leafletmapPlugin.DataProvider.getTimelineValue = function () {
         if (streetviewPluginSettings.show_timeline == 'true') {
             var timelineValue = +(streetviewPluginSettings.timeline || 0);
-            return { REC_TIME: timelineValue };
+            return { rec_time: timelineValue };
         } else {
             return {};
         }

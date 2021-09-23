@@ -94,7 +94,7 @@ var krpanoplugin = function () {
 streetviewPlugin.init = function (container, krpano, plugin) {
 
     var parseDates = function (data) {
-        var tmpl = '<option value="$1"'/* +$1 */ + '>$2</option>',
+        var tmpl = '<option value="$1" >$2</option>',
             html = '',
             selectedIndex;
         for (var i = 0; i < data.length; i++) {

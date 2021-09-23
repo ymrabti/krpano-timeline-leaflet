@@ -197,7 +197,7 @@
         );
 
         if(plugin[streetview].show_timeline == true,
-            txtadd(sv.temp_pano_url, get(sv.temp_pano_url), &amp;REC_TIME=, get(plugin[streetview].timeline));
+            txtadd(sv.temp_pano_url, get(sv.temp_pano_url), &amp;rec_time=, get(plugin[streetview].timeline));
             if(%3 == true,
                 txtadd(sv.temp_pano_url,get(sv.temp_pano_url),&amp;new_batch=1,&amp;old_lat=,get(mapspot.lat),&amp;old_lng=,get(mapspot.lng));
             );

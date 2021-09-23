@@ -60,20 +60,16 @@ app.use('/', router);
 app.use(errorHandler());
 
 // Handle not valid route
-/* app.use('*', (req, res) => {
+app.use('*', (req, res) => {
     res
     .status(404)
     .json( {status: false, message: 'Endpoint Not Found'} );
-}) */
+})
 
 // Open Server on selected Port
 app.listen(
     PORT,
     () => {
-
-        const all_routes = require('express-list-endpoints');
-        console.log("global routes :");
-        console.log(all_routes(router));
         console.info('Server listening on port ', PORT);
     }
 );
