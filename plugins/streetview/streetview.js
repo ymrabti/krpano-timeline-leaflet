@@ -1,14 +1,15 @@
 window.krpanoPluginsStuff = {
     streetview: {}
 };
-var streetviewPlugin = {};
+var streetviewPlugin = { karpano: null };
 streetviewPlugin.DataProvider = {
     firstXML: undefined,
     _actions: {
         timeline: {
             sectionName: 'timeline',
             actionNames: {
-                getDates: 'dates'
+                getDates: 'dates',
+                pano: 'now'
             },
             url: 'http://localhost:3000/timeline.php'
         }
@@ -28,6 +29,7 @@ streetviewPlugin.DataProvider = {
             section = acts.sectionName,
             action = acts.actionNames[actionName],
             url = this.firstXML + acts.url;
+        console.log(streetviewPlugin.karpano.xml);
         var xmlhttp = new XMLHttpRequest(),
             _params = {
                 section: section,
@@ -71,6 +73,7 @@ var krpanoplugin = function () {
     var plugincanvascontext = null;
     local.registerplugin = function (krpanointerface, _pluginpath, pluginobject) {
         krpano = krpanointerface;
+        streetviewPlugin.karpano = krpanointerface;
         plugin = pluginobject;
         streetviewPlugin.changeLayerOrder();
         var havegraphiccontent = plugin.show_timeline == 'true';
@@ -160,6 +163,7 @@ streetviewPlugin.init = function (container, krpano, plugin) {
 
             that.onchange();
         };
+    
     streetviewPlugin.DataProvider.getDates(parseDates);
     container.onchange = function () {
         setArrowEnabled();

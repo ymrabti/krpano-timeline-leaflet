@@ -32,7 +32,7 @@ const StreetViewPanos = db.define('StreetViewPanos', {
     }
 })
 const Cercles = db.define('Cercles', {
-    id_cercle: {
+    id: {
         primaryKey: true,
         type: Sequelize.STRING
     },
@@ -103,6 +103,14 @@ const Panos = db.define('Panos', {
         type:Sequelize.STRING
     }
 })
+
+
+Panos.belongsToMany(Cercles, {
+    through: 'usergroups',
+    sourceKey: 'cercle_id'
+});
+
+
 
 
 module.exports = { StreetViewPanos, Cercles,Panos };

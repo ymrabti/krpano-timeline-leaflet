@@ -166,8 +166,8 @@
         </layer>
     </layer> -->
     <layer name="skin_control_bar" keep="true" type="container" bgcolor="0x000000" bgalpha="0.5" align="leftbottom" width="100%" height="40" x="0" y="20" y_opened="20" y_closed="-42" zorder="3">
-        <layer name="skin_btn_VR" style="skin_base|skin_glow" crop="64|0|80|64" align="bottom" onclick="trace(webvr);webvr.enterVR();" x="-140" y="4" scale="0.5" />
-        <!-- <layer name="skin_btn_prev" style="skin_base|skin_glow" crop="0|64|64|64" align="left" x="5" y="0" scale="0.5" alpha="0.5" onclick="if(skin_settings.thumbs_loop, skin_nextscene_loop(-1), skin_nextscene(-1) );" />
+        <!-- <layer name="skin_btn_VR" style="skin_base|skin_glow" crop="64|0|80|64" align="bottom" onclick="trace(webvr);webvr.enterVR();" x="-140" y="4" scale="0.5" />
+        <layer name="skin_btn_prev" style="skin_base|skin_glow" crop="0|64|64|64" align="left" x="5" y="0" scale="0.5" alpha="0.5" onclick="if(skin_settings.thumbs_loop, skin_nextscene_loop(-1), skin_nextscene(-1) );" />
         <layer name="skin_btn_next" style="skin_base|skin_glow" crop="64|64|64|64" align="right" x="5" y="0" scale="0.5" alpha="0.5" onclick="if(skin_settings.thumbs_loop, skin_nextscene_loop(+1), skin_nextscene(+1) );" />
         <layer name="skin_btn_thumbs" style="skin_base|skin_glow" crop="0|128|64|64" align="leftbottom" x="50" y="4" scale="0.5" ondown2="skin_showmap(false); skin_showthumbs();" /> -->
         

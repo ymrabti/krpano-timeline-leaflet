@@ -285,7 +285,7 @@ leafletmapPlugin.initMap = function (container, krpano, plugin) {
 
         // array to stores all markers on the map,
         // where "index" for any marker is spot ID
-        markers = /*window.markers = */[],
+        markers = /*window.markers = */{},
 
         // holds current mapspot marker
         curMarker = undefined,
@@ -415,7 +415,7 @@ leafletmapPlugin.initMap = function (container, krpano, plugin) {
                 }
 
                 // create marker and add it to featureGroup
-                marker = window.L.marker([+spot.latitude, +spot.longitude], {
+                marker = window.L.marker([spot.latitude, spot.longitude], {
                     icon: iconCommon
                 }).addTo(featureGroup);
 
@@ -450,8 +450,8 @@ leafletmapPlugin.initMap = function (container, krpano, plugin) {
                 streetviewPlugin = krpano.plugin.getItem('streetview'),
                 timelineValue = leafletmapPlugin.DataProvider.getTimelineValue().rec_time;
 
-
-            for (var i = 0, len = markers.length; i < len; i++) {
+            
+            for (const i in markers) {
 
                 if (!(marker = markers[i])) { continue; }
 
@@ -470,15 +470,15 @@ leafletmapPlugin.initMap = function (container, krpano, plugin) {
                 // of current b_atch if streetview.show_timeline==true
                 if (typeof timelineValue != 'undefined' && marker.spotID != curSpotID) {
                     if (marker.rec_time != timelineValue) {
-                        featureGroup.removeLayer(marker);
-                        continue;
+                        /* featureGroup.removeLayer(marker);
+                        continue; */
                     }
                 }
 
 
                 //TODO: fix
                 // check that mapspot belongs to regions from railway if this plugin exists
-                /* if (false && railwayFields && marker.spotID != curSpotID) {
+                /* if (railwayFields && marker.spotID != curSpotID) {
                     skipDistanceComparison = false;
                     for (var fieldName in railwayFields) {
                         if (fieldName != 'keep' && railwayFields[fieldName] != marker[fieldName]) {
@@ -544,6 +544,7 @@ leafletmapPlugin.initMap = function (container, krpano, plugin) {
         // sets icon for current marker and updates radar position
         selectCurMarker = function () {
             curMarker = /*window.curMarker =*/ markers[getCurSpotID()];
+
             if (curMarker) {
                 curMarker
                     .setIcon(iconCurrent)
@@ -697,17 +698,15 @@ leafletmapPlugin.initMap = function (container, krpano, plugin) {
 
     var action_Plugin = leafletmapPlugin.DataProvider._actions.leaflet;
     let itv = setInterval(() => {
-        // console.log(window.L.control.layers.tree);
         krpano.trace(2, "Error LayerSwitcher")
         if (!window.L.control.layers.tree) {
             var script_plugin = document.createElement('script'),
-            src_Plugin = leafletmapPlugin.DataProvider.firstXML + action_Plugin.url + action_Plugin.actionNames.getLeafletPluginJS,
-            appendToPlugin = document.head;
+                src_Plugin = leafletmapPlugin.DataProvider.firstXML + action_Plugin.url + action_Plugin.actionNames.getLeafletPluginJS,
+                appendToPlugin = document.head;
             if (script_plugin.readyState && !script_plugin.onload) {
                 script_plugin.onreadystatechange = function () {
                     if (script_plugin.readyState == "loaded" || script_plugin.readyState == "complete") {
                         script_plugin.onreadystatechange = null;
-                        console.log("callback();");
                     }
                 }
             }
@@ -716,7 +715,7 @@ leafletmapPlugin.initMap = function (container, krpano, plugin) {
             }
             script_plugin.src = src_Plugin;
             appendToPlugin.appendChild(script_plugin);
-            
+
 
             //load leaflet.css
             var link_Plugin = document.createElement("link"),
@@ -1263,7 +1262,7 @@ leafletmapPlugin.leafletmapIncludeXMLContent = function (krpano) {
             `
         }
     );
-    krpano.action.createItem(
+    /* krpano.action.createItem(
         'vr_add_plugin_stuff',
         {
             content:
@@ -1280,7 +1279,7 @@ leafletmapPlugin.leafletmapIncludeXMLContent = function (krpano) {
                 set(layer[skin_btn_pv].parent, layer[skin_control_bar]);
             `
         }
-    );
+    ); */
 
     krpano.action.createItem(
         'leafletmap_move_container',

@@ -52,6 +52,11 @@
 
         <layer name="streetview_tm_label" keep="true" url="%FIRSTXML%/plugins/textfield.swf" align="right" x="150" selectable="false" handcursor="false" background="false" css="data:streetview_css_normal" textshadow="1" />
 
+        <combobox name="cb1" design="default">
+            <item name="item1" caption="Item 1" onclick="..." oninit="..." />
+            <item name="item2" caption="Item 2" onclick="..." />
+            <item name="item3" caption="Item 3" onclick="..." />
+        </combobox>
         <layer name="streetview_tm_arrow_left" keep="true" style="skin_base|skin_glow" crop="128|128|64|64" align="right" x="120" scale="0.35" ondown2="js(krpanoPluginsStuff.streetview.setPrevBatch());" />
 
         <layer name="streetview_tm_arrow_right" keep="true" style="skin_base|skin_glow" crop="128|64|64|64" align="right" x="-5" scale="0.35" ondown2="js(krpanoPluginsStuff.streetview.setNextBatch());" />

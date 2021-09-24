@@ -12,6 +12,7 @@ function uuidv4() {
 }
 const has = require('has-keys');
 const Sequelize = require('sequelize');
+const { Panos, Cercles } = require('../models/streetviewModel');
 const Op = Sequelize.Op;
 module.exports = {
     async getXmlPano(req, res) {
@@ -25,14 +26,35 @@ module.exports = {
             }
         }
 
-        var dataf = await models.Panos.findOne({
-            attributes: ['id', 'pano', 'latitude', 'longitude', 'heading', 'rec_time', 'dist'],
+        var dataf = await Panos.findOne({
+            attributes: ['id', 'pano', 'latitude', 'longitude', 'heading', 'rec_time', 'cercle_id', 'dist'],
             where: { pano: sv/* , rec_time */ }
         });
 
         if (!dataf) throw { code: status.NOT_FOUND, message: 'Pano NOT FOUND 404' };
 
         let dataValues = dataf.dataValues;
+        const cercle = await Cercles.findByPk(dataf['cercle_id']);
+
+        let prev_pano = cercle.dataValues['prev_pano']; 
+        let next_pano = cercle.dataValues['next_pano']; 
+
+        let prev_pano_1st = await Panos.findAll({
+            where: { 'cercle_id': prev_pano },
+            order: ['timestamp'],
+            limit: 1
+        });
+        let next_pano_1st = await Panos.findAll({
+            where: { 'cercle_id': next_pano },
+            order: ['timestamp'],
+            limit: 1
+        });
+        let prev_length = prev_pano_1st.length;
+        let next_length = next_pano_1st.length;
+
+        let prev_hotspot = prev_length != 0 ? `<hotspot name="spot1" style="streetview_arrow" direction= "178" linkedpano="${prev_pano_1st[0].pano}" description="" imagetype="normal"/>` : "";
+        let next_hotspot = next_length != 0 ? `<hotspot name="spot2" style="streetview_arrow" direction="-7" linkedpano="${next_pano_1st[0].pano}" description="" imagetype="normal"/>` : "";
+
         let panoname = dataValues.pano.replace(".JPG", '') + "_Stitch_XHC";
         var data = `
         <krpano>
@@ -41,12 +63,8 @@ module.exports = {
             <image>
                 <cube url="https://berkane.xyz/vr/panos/${panoname}%s.png" />
             </image>
-            <hotspot name="spot1" style="streetview_arrow" direction="177" linkedpano="20160310-11140819" description="" imagetype="sequence"/>
-            <hotspot name="spot2" style="streetview_arrow" direction= "-6" linkedpano="20160310-11140821" description="" imagetype="sequence"/>
-            <hotspot name="spot3" style="streetview_arrow" direction="177" linkedpano="20160310-11140818" description="" imagetype="normal"/>
-            <hotspot name="spot4" style="streetview_arrow" direction= "-6" linkedpano="20160310-11140822" description="" imagetype="normal"/>
-            <hotspot name="spot5" style="streetview_arrow" direction= "-7" linkedpano="20160310-11140823" description="" imagetype="normal"/>
-            <hotspot name="spot6" style="streetview_arrow" direction="178" linkedpano="20160310-11140817" description="" imagetype="normal"/>
+            ${next_hotspot}
+            ${prev_hotspot}
         </krpano>
         `;
 
@@ -57,20 +75,62 @@ module.exports = {
         if (!has(req.query, ['lat1', 'lat2', 'lng1', 'lng2', 'rec_time']))
             throw { code: status.BAD_REQUEST, message: 'You must specify the Bounds' };
         let { lat1, lat2, lng1, lng2, rec_time } = req.query;
+        let where = {
+            latitude: { [Op.between]: [parseFloat(lat1), parseFloat(lat2)] },
+            longitude: { [Op.between]: [parseFloat(lng1), parseFloat(lng2)] },
+        };
+        let include0 = {
+            model: Panos,
+            required: false,
+            attributes: [['id', 'ref_panorama'], 'pano', 'heading', 'rec_time', 'dist'],
+            order: [['timestamp', 'ASC']],
+            limit: 1000
+        };
 
-        let data = await models.Panos.findAll({
+        /*  */
+        Panos.belongsTo(Cercles, { foreignKey: 'cercle_id' });
+        Cercles.hasMany(Panos, { foreignKey: 'cercle_id' });
+
+        let data = await Cercles.findAll({
+            include: [include0], where,
+            attributes: ['id', 'latitude', 'longitude'],
+        }).map(e => ({
+            ...e.dataValues,
+            ...e.dataValues.Panos[0].dataValues,
+            Panos: e.dataValues.Panos.length
+        })).map(e => ({ ...e, id: e['ref_panorama'], ref_cercle: e['id'] }));
+
+        /* let data = await Panos.findAll({
             attributes: ['id', 'pano', 'latitude', 'longitude', 'heading', 'rec_time', 'dist'],
-            where: {
-                latitude: { [Op.between]: [parseFloat(lat1), parseFloat(lat2)] },
-                longitude: { [Op.between]: [parseFloat(lng1), parseFloat(lng2)] },
-                // rec_time:rec_time
-            },
-            order: ['pano']
-        });
+            where, order: ['pano']
+        }); */
+
         res.json(data);
     },
+    async deleteUser(req, res) {
+        // if (!has(req.params, 'id')) throw { code: status.BAD_REQUEST, message: 'You must specify the id' };
+        let data = await Cercles.findAll({
+            include: [{
+                model: Panos,
+                // where: { id: "cercle_id" },
+                required: false,
+                // where: { "latitude": { [Op.gte]: 34.93239} },
+                attributes: [['id', 'ref_panorama'], 'pano', 'heading', 'rec_time', 'dist'],
+                order: [['timestamp', 'ASC']],
+                limit: 1000
+            }],
+            attributes: ['id', 'latitude', 'longitude'],
+            // order: ['timestamp']
+        });
+
+        res.json(data.map((e, i) => {
+            return { ...e.dataValues, ...e.dataValues.Panos[0].dataValues, Panos: e.dataValues.Panos.length };
+        }));
+    },
     async getTimeline(req, res) {
-        res.json([{ "id": "1", "value": "2016-06-20" }, { "id": "2", "value": "2016-03-10" }, { "id": "3", "value": "2015-05-18" }]);
+        // if (!has(req.query, ['sv', 'panoid'])) throw { code: status.BAD_REQUEST, message: 'You must specify the id, name and pano' };
+
+        res.json([{ "id": "1", "value": "2017-06-20" }, { "id": "2", "value": "2016-03-10" }, { "id": "3", "value": "2015-05-18" }]);
     },
     async newSurveys(req, res) {
         let radios = 15;
@@ -114,7 +174,7 @@ module.exports = {
                             timestamp: curr.timestamp,
                             cercle_id: proche.OBJECTID
                         });
-                        cercles.find((val) => val.id_cercle == proche.OBJECTID).panoscount++;
+                        cercles.find((val) => val.id == proche.OBJECTID).panoscount++;
                         // add new survey
                         proche.points.push(curr);
                         return true;
@@ -130,11 +190,9 @@ module.exports = {
                     // acc.find(ac => ac.pano == label).points.push(curr);
                     // add new cercle
                     cercles.push({
-                        id_cercle: curr.OBJECTID,
+                        id: curr.OBJECTID,
                         latitude: curr.latitude,
                         longitude: curr.longitude,
-                        next: null,
-                        prev: null,
                         radios,
                         panoscount: 1
                     });
@@ -156,37 +214,28 @@ module.exports = {
             }, []);
         cercles = cercles.map((cercle, index, array) => ({
             ...cercle,
-            next_pano: index !== array.length - 1 ? array[index + 1].id_cercle : null,
-            prev_pano: index !== 0 ? array[index - 1].id_cercle : null,
+            next_pano: index !== array.length - 1 ? array[index + 1].id : null,
+            prev_pano: index !== 0 ? array[index - 1].id : null,
             createdat: new Date().getTime(),
             updatedat: new Date().getTime(),
             stampuui: cercle.latitude.toString().replace('.', '') +
                 cercle.longitude.toString().replace('.', '')
         }));
-        var errorscercles = 0;
-        cercles.forEach((element,ind) => {
-            models.Cercles.create(element)
-                .catch(err => { errorscercles++; console.log("Error at : stampuui"+element.stampuui); });
-        });
-        var errorspanos = 0;
-        panos.forEach(element => {
-            models.Panos.create({
-                ...element,
-                createdat: new Date().getTime(),
-                updatedat: new Date().getTime(),
-                stampuui: element.latitude.toString().replace('.', '') +
-                    element.longitude.toString().replace('.', '') +
-                    element.pano
-            })
-                .catch(err=>{errorspanos++;console.log("Error at : stampuui"+element.stampuui);});
-        });
-        setTimeout(() => {
-            console.log(errorscercles, errorspanos);
-        }, 5000);
+        panos = panos.map(element => ({
+            ...element,
+            createdat: new Date().getTime(),
+            updatedat: new Date().getTime(),
+            stampuui: element.latitude.toString().replace('.', '') +
+                element.longitude.toString().replace('.', '') +
+                element.pano
+        }));
+        await Cercles.bulkCreate(cercles);
+        await Panos.bulkCreate(panos);
+
         res.json({
-            status: true, message: {
-                cercles,
-                panos,
+            status: true, cercles,
+            panos, message: {
+
                 panosIn: finalData.reduce((a, c) => a + c.points.length, 0),
                 centers: finalData.length,
                 somme: finalData.reduce((a, c) => a + c.points.length, 0) + finalData.length,
@@ -195,23 +244,62 @@ module.exports = {
         });
     },
     async updateUser(req, res) {
-        if (!has(req.body, ['id', 'name', 'email']))
-            throw { code: status.BAD_REQUEST, message: 'You must specify the id, name and email' };
+        if (!has(req.query, 'sv', 'rec_time')) throw { code: status.BAD_REQUEST, message: 'You must specify the streetview and rec_time' };
 
-        let { id, name, email } = req.body;
+        let { sv, rec_time, new_batch, old_lat, old_lng } = req.query;
+        if (('null' != sv) && new_batch && old_lat && old_lat) {
+            where = {
+                latitude: { [Op.eq]: parseFloat(old_lat) },
+                longitude: { [Op.eq]: parseFloat(old_lng) }
+            }
+        }
 
-        await models.Panos.updateUser({ name, email }, { where: { id } });
+        var dataf = await Panos.findOne({
+            attributes: ['id', 'pano', 'latitude', 'longitude', 'heading', 'rec_time', 'cercle_id', 'dist'],
+            where: { pano: sv/* , rec_time */ }
+        });
 
-        res.json({ status: true, message: 'User updated' });
-    },
-    async deleteUser(req, res) {
-        if (!has(req.params, 'id'))
-            throw { code: status.BAD_REQUEST, message: 'You must specify the id' };
+        if (!dataf) throw { code: status.NOT_FOUND, message: 'Pano NOT FOUND 404' };
 
-        let { id } = req.params;
+        let dataValues = dataf.dataValues;
+        const cercle = await Cercles.findByPk(dataf['cercle_id']);
 
-        await models.Panos.destroy({ where: { id } });
+        let prev_pano = cercle.dataValues['prev_pano']; 
+        let next_pano = cercle.dataValues['next_pano']; 
 
-        res.json({ status: true, message: 'User deleted' });
+        let prev_pano_1st = await Panos.findAll({
+            where: {'cercle_id':prev_pano},
+            order: ['timestamp'],
+            limit: 1
+        });
+        let next_pano_1st = await Panos.findAll({
+            where: {'cercle_id':next_pano},
+            order: ['timestamp'],
+            limit: 1
+        });
+
+        let next_hotspot = cercle.dataValues['next_pano'] ? `<hotspot name="spot5" style="streetview_arrow" direction= "-7" linkedpano="${prev_pano_1st[0].pano}" description="" imagetype="normal"/>` : "";
+        let prev_hotspot = cercle.dataValues['prev_pano'] ? `<hotspot name="spot6" style="streetview_arrow" direction="178" linkedpano="${next_pano_1st[0].pano}" description="" imagetype="normal"/>` : "";
+
+        let panoname = dataValues.pano.replace(".JPG", '') + "_Stitch_XHC";
+        var data = `
+        <krpano>
+            <mapspot id="${dataValues.id}" pano="${panoname}" title="${panoname}" lat="${dataValues.latitude}" lng="${dataValues.longitude}" heading="${dataValues.heading}"/>
+            <preview url="https://berkane.xyz/vr/panos/preview_${panoname}.png"/>
+            <image>
+                <cube url="https://berkane.xyz/vr/panos/${panoname}%s.png" />
+            </image>
+            ${prev_hotspot}
+            ${next_hotspot}
+        </krpano>
+        `;
+
+        res.json({
+            xml: data,
+            prev_pano: prev_pano == null,
+            next_pano,
+            prev_pano_1st:prev_pano_1st[0],
+            next_pano_1st:next_pano_1st[0]
+        });
     }
 }
