@@ -543,7 +543,7 @@ leafletmapPlugin.initMap = function (container, krpano, plugin) {
 
         // sets icon for current marker and updates radar position
         selectCurMarker = function () {
-            curMarker = /*window.curMarker =*/ markers[getCurSpotID()];
+            curMarker = /*window.curMarker =*/ markers[getCurSpotID()]; console.log(getCurSpotID());
 
             if (curMarker) {
                 curMarker

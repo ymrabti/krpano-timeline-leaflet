@@ -29,7 +29,7 @@ streetviewPlugin.DataProvider = {
             section = acts.sectionName,
             action = acts.actionNames[actionName],
             url = this.firstXML + acts.url;
-        console.log(streetviewPlugin.karpano.xml);
+
         var xmlhttp = new XMLHttpRequest(),
             _params = {
                 section: section,
@@ -97,30 +97,51 @@ var krpanoplugin = function () {
 streetviewPlugin.init = function (container, krpano, plugin) {
 
     var parseDates = function (data) {
-        var tmpl = '<option value="$1" >$2</option>',
-            html = '',
-            selectedIndex;
-        for (var i = 0; i < data.length; i++) {
-            var date = data[i];
-            if (date.id == +plugin.timeline) {
-                selectedIndex = i;
-            }
-            html += tmpl.replace('$1', date.id).replace('$2', date.value);
-        }
+        console.log(data);
         var timelineElem = document.getElementById('timeline');
-        timelineElem.innerHTML = html;
-        timelineElem.selectedIndex = selectedIndex;
-        setArrowEnabled();
-        container.style.width = '';
-        var widthDelta = parseInt(container.offsetWidth) - plugin.width;
-        if (widthDelta > 0) {
-            var label = krpano.layer.getItem('streetview_tm_label');
-            var arrowLeft = krpano.layer.getItem('streetview_tm_arrow_left');
-            label.x = +label.x + widthDelta;
-            arrowLeft.x = +arrowLeft.x + widthDelta;
-            plugin.x = +plugin.x + widthDelta;
-        } else {
-            container.style.width = '100%';
+
+        if (Array.isArray(data)) {
+            timelineElem.innerHTML = '';
+            let historique = data.map(date => {
+                let datetime = new Date(parseInt(date.timestamp));
+                let localeDate = datetime.toLocaleDateString();
+                let localeTime = datetime.toLocaleTimeString();
+                return {
+                    localeDate, localeTime, id: date.id
+                }
+            });
+
+            let map = new Map(historique.map(({ localeDate }) => [localeDate, { localeDate, times: [] }]));
+            for (let { localeTime, id, localeDate } of historique) {
+                map.get(localeDate).times.push({ localeTime, id });
+            }
+            let result = Array.from(map.values());
+
+            result.forEach(res => {
+                let group = document.createElement('optgroup');
+                group.setAttribute('label', res.localeDate);
+
+                res.times.forEach(time => {
+                    let option = document.createElement('option');
+                    option.value = time.id;
+                    option.textContent = time.localeTime;
+                    group.appendChild(option);
+                });
+
+                timelineElem.appendChild(group);
+            })
+            setArrowEnabled();
+            container.style.width = '';
+            var widthDelta = parseInt(container.offsetWidth) - plugin.width;
+            if (widthDelta > 0) {
+                var label = krpano.layer.getItem('streetview_tm_label');
+                var arrowLeft = krpano.layer.getItem('streetview_tm_arrow_left');
+                label.x = +label.x + widthDelta;
+                arrowLeft.x = +arrowLeft.x + widthDelta;
+                plugin.x = +plugin.x + widthDelta;
+            } else {
+                container.style.width = '100%';
+            }
         }
     },
         setArrowEnabled = function () {
@@ -163,8 +184,17 @@ streetviewPlugin.init = function (container, krpano, plugin) {
 
             that.onchange();
         };
-    
-    streetviewPlugin.DataProvider.getDates(parseDates);
+    let sv = streetviewPlugin.karpano.sv;
+    var current_pano = sv.startup_pano;
+
+    setInterval(() => {
+        if (current_pano !== sv.current_pano) {
+            current_pano = sv.current_pano;
+            if (current_pano !== undefined && current_pano !== null) {
+                streetviewPlugin.DataProvider.getDates(parseDates, { sv: current_pano });
+            }
+        }
+    }, 50);
     container.onchange = function () {
         setArrowEnabled();
         var newBatch = this.options[this.selectedIndex].value;

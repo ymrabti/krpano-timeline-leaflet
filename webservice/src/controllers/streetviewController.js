@@ -19,16 +19,16 @@ module.exports = {
         if (!has(req.query, 'sv', 'rec_time')) throw { code: status.BAD_REQUEST, message: 'You must specify the streetview and rec_time' };
 
         let { sv, rec_time, new_batch, old_lat, old_lng } = req.query;
-        if (('null' != sv) && new_batch && old_lat && old_lat) {
+        /* if (('null' != sv) && new_batch && old_lat && old_lat) {
             where = {
                 latitude: { [Op.eq]: parseFloat(old_lat) },
                 longitude: { [Op.eq]: parseFloat(old_lng) }
             }
         }
-
+ */
         var dataf = await Panos.findOne({
             attributes: ['id', 'pano', 'latitude', 'longitude', 'heading', 'rec_time', 'cercle_id', 'dist'],
-            where: { pano: sv/* , rec_time */ }
+            where: { pano: sv }
         });
 
         if (!dataf) throw { code: status.NOT_FOUND, message: 'Pano NOT FOUND 404' };
@@ -36,8 +36,8 @@ module.exports = {
         let dataValues = dataf.dataValues;
         const cercle = await Cercles.findByPk(dataf['cercle_id']);
 
-        let prev_pano = cercle.dataValues['prev_pano']; 
-        let next_pano = cercle.dataValues['next_pano']; 
+        let prev_pano = cercle.dataValues['prev_pano'];
+        let next_pano = cercle.dataValues['next_pano'];
 
         let prev_pano_1st = await Panos.findAll({
             where: { 'cercle_id': prev_pano },
@@ -58,7 +58,7 @@ module.exports = {
         let panoname = dataValues.pano.replace(".JPG", '') + "_Stitch_XHC";
         var data = `
         <krpano>
-            <mapspot id="${dataValues.id}" pano="${panoname}" title="${panoname}" lat="${dataValues.latitude}" lng="${dataValues.longitude}" heading="${dataValues.heading}"/>
+            <mapspot id="${dataf['cercle_id']}" pano="${panoname}" title="${panoname}" lat="${dataValues.latitude}" lng="${dataValues.longitude}" heading="${dataValues.heading}"/>
             <preview url="https://berkane.xyz/vr/panos/preview_${panoname}.png"/>
             <image>
                 <cube url="https://berkane.xyz/vr/panos/${panoname}%s.png" />
@@ -70,6 +70,28 @@ module.exports = {
 
         res.header("Content-Type", "application/xml");
         res.status(200).send(data);
+    },
+    async getTimeline(req, res) {
+        if (!has(req.query, ['sv'])) throw { code: status.BAD_REQUEST, message: 'You must specify the streetview pano' };
+        let { sv } = req.query;
+
+        var dataf = await Panos.findOne({
+            attributes: ['id', 'pano', 'latitude', 'longitude', 'heading', 'rec_time', 'cercle_id', 'dist'],
+            where: { pano: sv/* , rec_time */ }
+        });
+
+        if (!dataf) throw { code: status.NOT_FOUND, message: 'Pano NOT FOUND 404' };
+
+        let dataValues = dataf.dataValues;
+        const dates = await Panos.findAll({
+            where: {
+                'cercle_id': dataValues['cercle_id']
+            }
+        });
+        /* console.log('\n\n');
+        console.log();
+        console.log('\n\n'); */
+        res.json(dates.map(e => ({ id: e.dataValues.pano, value: e.dataValues.rec_time, timestamp: e.dataValues.timestamp })));
     },
     async getSpots(req, res) {
         if (!has(req.query, ['lat1', 'lat2', 'lng1', 'lng2', 'rec_time']))
@@ -98,7 +120,7 @@ module.exports = {
             ...e.dataValues,
             ...e.dataValues.Panos[0].dataValues,
             Panos: e.dataValues.Panos.length
-        })).map(e => ({ ...e, id: e['ref_panorama'], ref_cercle: e['id'] }));
+        }))//.map(e => ({ ...e, id: e['ref_panorama'], ref_cercle: e['id'] }));
 
         /* let data = await Panos.findAll({
             attributes: ['id', 'pano', 'latitude', 'longitude', 'heading', 'rec_time', 'dist'],
@@ -124,13 +146,8 @@ module.exports = {
         });
 
         res.json(data.map((e, i) => {
-            return { ...e.dataValues, ...e.dataValues.Panos[0].dataValues, Panos: e.dataValues.Panos.length };
+            return { ...e.dataValues, id: e.dataValues.ref_cercle, ...e.dataValues.Panos[0].dataValues, Panos: e.dataValues.Panos.length };
         }));
-    },
-    async getTimeline(req, res) {
-        // if (!has(req.query, ['sv', 'panoid'])) throw { code: status.BAD_REQUEST, message: 'You must specify the id, name and pano' };
-
-        res.json([{ "id": "1", "value": "2017-06-20" }, { "id": "2", "value": "2016-03-10" }, { "id": "3", "value": "2015-05-18" }]);
     },
     async newSurveys(req, res) {
         let radios = 15;
@@ -264,16 +281,16 @@ module.exports = {
         let dataValues = dataf.dataValues;
         const cercle = await Cercles.findByPk(dataf['cercle_id']);
 
-        let prev_pano = cercle.dataValues['prev_pano']; 
-        let next_pano = cercle.dataValues['next_pano']; 
+        let prev_pano = cercle.dataValues['prev_pano'];
+        let next_pano = cercle.dataValues['next_pano'];
 
         let prev_pano_1st = await Panos.findAll({
-            where: {'cercle_id':prev_pano},
+            where: { 'cercle_id': prev_pano },
             order: ['timestamp'],
             limit: 1
         });
         let next_pano_1st = await Panos.findAll({
-            where: {'cercle_id':next_pano},
+            where: { 'cercle_id': next_pano },
             order: ['timestamp'],
             limit: 1
         });
@@ -298,8 +315,8 @@ module.exports = {
             xml: data,
             prev_pano: prev_pano == null,
             next_pano,
-            prev_pano_1st:prev_pano_1st[0],
-            next_pano_1st:next_pano_1st[0]
+            prev_pano_1st: prev_pano_1st[0],
+            next_pano_1st: next_pano_1st[0]
         });
     }
 }
