@@ -85,7 +85,7 @@ var krpanoplugin = function () {
             plugincanvas.style.height = '100%';
             plugincanvas.onselectstart = function () { return false; };
             plugin.sprite.appendChild(plugincanvas);
-            streetviewPlugin.DataProvider.firstXML = krpano.parsePath('%FIRSTXML%');
+            streetviewPlugin.DataProvider.firstXML = ''/* krpano.parsePath('%FIRSTXML%') */;
             streetviewPlugin.init(plugincanvas, krpano, plugin);
         }
     };
@@ -97,9 +97,7 @@ var krpanoplugin = function () {
 streetviewPlugin.init = function (container, krpano, plugin) {
 
     var parseDates = function (data) {
-        console.log(data);
         var timelineElem = document.getElementById('timeline');
-
         if (Array.isArray(data)) {
             timelineElem.innerHTML = '';
             let historique = data.map(date => {
@@ -118,17 +116,19 @@ streetviewPlugin.init = function (container, krpano, plugin) {
             let result = Array.from(map.values());
 
             result.forEach(res => {
-                let group = document.createElement('optgroup');
+                /* let group = document.createElement('optgroup');
                 group.setAttribute('label', res.localeDate);
-
                 res.times.forEach(time => {
                     let option = document.createElement('option');
                     option.value = time.id;
                     option.textContent = time.localeTime;
                     group.appendChild(option);
                 });
-
-                timelineElem.appendChild(group);
+                timelineElem.appendChild(group); */
+                let option = document.createElement('option');
+                option.value = res.times[0].id;
+                option.textContent = res.localeDate;
+                timelineElem.appendChild(option);
             })
             setArrowEnabled();
             container.style.width = '';

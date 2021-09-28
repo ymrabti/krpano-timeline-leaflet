@@ -252,13 +252,8 @@ var krpanoplugin = function () {
             leafletmapPlugin.promise.then(function () {
                 window.krpanoPluginsStuff.leafletmap.invMapSize = leafletmapPlugin.initMap(plugincanvas, krpano, plugin);
 
-                /*leafletmapPlugin.DataProvider.getXML(function (xmldata) {
-                    krpano.call("loadxml('" + xmldata + "');");
-                    krpano.call("leafletmap_add_plugin_stuff();");
-                });*/
-
                 leafletmapPlugin.leafletmapIncludeXMLContent(krpano);
-                krpano.call("leafletmap_add_plugin_stuff();");
+                // krpano.call("leafletmap_add_plugin_stuff();");
                 // krpano.call("vr_add_plugin_stuff();");
             });
 
@@ -543,7 +538,7 @@ leafletmapPlugin.initMap = function (container, krpano, plugin) {
 
         // sets icon for current marker and updates radar position
         selectCurMarker = function () {
-            curMarker = /*window.curMarker =*/ markers[getCurSpotID()]; console.log(getCurSpotID());
+            curMarker = /*window.curMarker =*/ markers[getCurSpotID()]; 
 
             if (curMarker) {
                 curMarker
@@ -1262,24 +1257,25 @@ leafletmapPlugin.leafletmapIncludeXMLContent = function (krpano) {
             `
         }
     );
-    /* krpano.action.createItem(
+    krpano.action.createItem(
         'vr_add_plugin_stuff',
         {
             content:
                 `
-                addlayer(skin_btn_pv);
-                set(layer[skin_btn_pv].keep, true);
-                layer[skin_btn_pv].loadstyle("skin_base|skin_glow");
-                set(layer[skin_btn_pv].crop, "64|0|80|64");
-                set(layer[skin_btn_pv].align, "center");
-                set(layer[skin_btn_pv].x, -150);
-                set(layer[skin_btn_pv].scale, "0.5");
-                set(layer[skin_btn_pv].visible, true);
-                set(layer[skin_btn_pv].onclick, webvr.enterVR(););
-                set(layer[skin_btn_pv].parent, layer[skin_control_bar]);
+                addlayer(skin_btn_VR);
+                set(layer[skin_btn_VR].keep, true);
+                layer[skin_btn_VR].loadstyle("skin_base|skin_glow");
+                set(layer[skin_btn_VR].crop, "64|0|80|64");
+                set(layer[skin_btn_VR].align, "bottom");
+                set(layer[skin_btn_VR].x, "-140");
+                set(layer[skin_btn_VR].y, "4");
+                set(layer[skin_btn_VR].scale, "0.5");
+                set(layer[skin_btn_VR].visible, true);
+                set(layer[skin_btn_VR].onclick, webvr.enterVR(););
+                set(layer[skin_btn_VR].parent, layer[skin_control_bar]);
             `
         }
-    ); */
+    );
 
     krpano.action.createItem(
         'leafletmap_move_container',

@@ -59,17 +59,22 @@ app.use('/', router);
 // Handle errors
 app.use(errorHandler());
 
+
+
+
 // Handle not valid route
 app.use('*', (req, res) => {
     res
-    .status(404)
-    .json( {status: false, message: 'Endpoint Not Found'} );
-})
+        .status(404)
+        .json({ status: false, message: 'Endpoint Not Found' });
+});
 
-// Open Server on selected Port
 app.listen(
     PORT,
     () => {
+        const all_routes = require('express-list-endpoints');
+        console.log("Global Routes :");
+        console.log(all_routes(app));
         console.info('Server listening on port ', PORT);
     }
 );
