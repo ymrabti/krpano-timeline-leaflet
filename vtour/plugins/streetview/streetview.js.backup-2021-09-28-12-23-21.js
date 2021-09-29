@@ -30,7 +30,7 @@ var krpanoplugin = function () {
                 section = acts.sectionName,
                 action = acts.actionNames[actionName],
                 url = this.firstXML + acts.url;
-
+    
             var xmlhttp = new XMLHttpRequest(),
                 _params = {
                     section: section,
@@ -38,7 +38,7 @@ var krpanoplugin = function () {
                 };
             streetviewPlugin.Utils.extend(_params, params);
             url += _params.noParams ? '' : '?' + this._encodeQueryData(_params);
-
+    
             if (typeof krpanoXhrCallback == 'function') {
                 krpanoXhrCallback(url, callback);
                 return;
@@ -54,7 +54,7 @@ var krpanoplugin = function () {
                         ? xmlhttp.responseText
                         : JSON.parse(xmlhttp.responseText)
                     );
-
+    
                 if (callback && data && !data.error) {
                     callback(data);
                 }
@@ -94,7 +94,7 @@ var krpanoplugin = function () {
         krpano = null;
     };
     streetviewPlugin.init = function (container, krpano, plugin) {
-
+    
         var parseDates = function (data) {
             var timelineElem = document.getElementById('timeline');
             if (Array.isArray(data)) {
@@ -107,13 +107,13 @@ var krpanoplugin = function () {
                         localeDate, localeTime, id: date.id
                     }
                 });
-
+    
                 let map = new Map(historique.map(({ localeDate }) => [localeDate, { localeDate, times: [] }]));
                 for (let { localeTime, id, localeDate } of historique) {
                     map.get(localeDate).times.push({ localeTime, id });
                 }
                 let result = Array.from(map.values());
-
+    
                 result.forEach(res => {
                     /* let group = document.createElement('optgroup');
                     group.setAttribute('label', res.localeDate);
@@ -155,7 +155,7 @@ var krpanoplugin = function () {
                     krpano.set('layer[streetview_tm_arrow_left].enabled', true);
                     krpano.set('layer[streetview_tm_arrow_left].crop', "128|128|64|64");
                 }
-
+    
                 if (that.selectedIndex == that.options.length - 1) {
                     krpano.set('layer[streetview_tm_arrow_right].enabled', false);
                     krpano.set('layer[streetview_tm_arrow_right].crop', "128|256|64|64");
@@ -170,22 +170,22 @@ var krpanoplugin = function () {
             setPrevBatch = function () {
                 var that = container;
                 if (that.selectedIndex == 0) return;
-
+    
                 that.selectedIndex = that.selectedIndex - 1;
-
+    
                 that.onchange();
             },
             setNextBatch = function () {
                 var that = container;
                 if (that.selectedIndex == that.options.length - 1) return;
-
+    
                 that.selectedIndex = that.selectedIndex + 1;
-
+    
                 that.onchange();
             };
         let sv = streetviewPlugin.karpano.sv;
         var current_pano = sv.startup_pano;
-
+    
         setInterval(() => {
             if (current_pano !== sv.current_pano) {
                 current_pano = sv.current_pano;
@@ -215,27 +215,27 @@ var krpanoplugin = function () {
         try {
             var layers = document.getElementById('krpanoSWFObject').children[0].children[1].children,
                 arr = [layers[0], layers[1], layers[2]];
-
+    
             for (var i = 0; i < arr.length; i++) {
-
+    
                 var layer = arr[i],
                     zIndex = layer.style.zIndex + '',
                     display = layer.style.display;
-
+    
                 if (zIndex && display != 'none') {
                     layer.style.zIndex = 1900 + parseInt(zIndex.slice(2));
                 }
-
+    
             }
         }
         catch (e) {
-
+    
         }
     };
     streetviewPlugin.Utils = {
         extend: function (dest) {
             var i, j, len, src;
-
+    
             for (j = 1, len = arguments.length; j < len; j++) {
                 src = arguments[j];
                 for (i in src) {

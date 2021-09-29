@@ -1,5 +1,10 @@
 var krpanoplugin = function () {
-    window.leafletmap = {};
+    window.krpanoPluginsStuff.leafletmap = {};
+    
+    /*! promise-polyfill 2.0.0 */
+    if (!window.Promise) {
+        !function () { function a(a, b) { return function () { a.apply(b, arguments) } } function b(b) { if ("object" != typeof this) throw new TypeError("Promises must be constructed via new"); if ("function" != typeof b) throw new TypeError("not a function"); this._state = null, this._value = null, this._deferreds = [], h(b, a(d, this), a(e, this)) } function c(a) { var b = this; return null === this._state ? void this._deferreds.push(a) : void j(function () { var c = b._state ? a.onFulfilled : a.onRejected; if (null === c) return void (b._state ? a.resolve : a.reject)(b._value); var d; try { d = c(b._value) } catch (e) { return void a.reject(e) } a.resolve(d) }) } function d(b) { try { if (b === this) throw new TypeError("A promise cannot be resolved with itself."); if (b && ("object" == typeof b || "function" == typeof b)) { var c = b.then; if ("function" == typeof c) return void h(a(c, b), a(d, this), a(e, this)) } this._state = !0, this._value = b, f.call(this) } catch (g) { e.call(this, g) } } function e(a) { this._state = !1, this._value = a, f.call(this) } function f() { for (var a = 0, b = this._deferreds.length; b > a; a++)c.call(this, this._deferreds[a]); this._deferreds = null } function g(a, b, c, d) { this.onFulfilled = "function" == typeof a ? a : null, this.onRejected = "function" == typeof b ? b : null, this.resolve = c, this.reject = d } function h(a, b, c) { var d = !1; try { a(function (a) { d || (d = !0, b(a)) }, function (a) { d || (d = !0, c(a)) }) } catch (e) { if (d) return; d = !0, c(e) } } var i; i = "object" == typeof window && window ? window : global; var j = b.immediateFn || i.setImmediate || function (a) { setTimeout(a, 1) }, k = Array.isArray || function (a) { return "[object Array]" === Object.prototype.toString.call(a) }; b.prototype["catch"] = function (a) { return this.then(null, a) }, b.prototype.then = function (a, d) { var e = this; return new b(function (b, f) { c.call(e, new g(a, d, b, f)) }) }, b.all = function () { var a = Array.prototype.slice.call(1 === arguments.length && k(arguments[0]) ? arguments[0] : arguments); return new b(function (b, c) { function d(f, g) { try { if (g && ("object" == typeof g || "function" == typeof g)) { var h = g.then; if ("function" == typeof h) return void h.call(g, function (a) { d(f, a) }, c) } a[f] = g, 0 === --e && b(a) } catch (i) { c(i) } } if (0 === a.length) return b([]); for (var e = a.length, f = 0; f < a.length; f++)d(f, a[f]) }) }, b.resolve = function (a) { return a && "object" == typeof a && a.constructor === b ? a : new b(function (b) { b(a) }) }, b.reject = function (a) { return new b(function (b, c) { c(a) }) }, b.race = function (a) { return new b(function (b, c) { for (var d = 0, e = a.length; e > d; d++)a[d].then(b, c) }) }, "undefined" != typeof module && module.exports ? module.exports = b : i.Promise || (i.Promise = b) }();
+    }
 
     var leafletmapPlugin = {};
 
@@ -35,7 +40,7 @@ var krpanoplugin = function () {
                 path = parsed != null ? parsed[1] : '';
             }
 
-            window.leafletmap.firstXML = path;
+            window.krpanoPluginsStuff.leafletmap.firstXML = path;
 
             return path;
         })(),
@@ -199,9 +204,12 @@ var krpanoplugin = function () {
         }
     };
 
-    window.leafletmap.leafletjsLoadPromise = leafletmapPlugin.promise = new Promise(function (resolve, reject) {
+    window.krpanoPluginsStuff.leafletmap.leafletjsLoadPromise = leafletmapPlugin.promise = new Promise(function (resolve, reject) {
         leafletmapPlugin.DataProvider.getLeafletStuff(resolve);
     });
+
+
+
 
     leafletmapPlugin.initMap = function (container, krpano, plugin) {
 
@@ -564,9 +572,6 @@ var krpanoplugin = function () {
             isLocalVersion: isLocalVersion
         }).on('zoomend', skipMarkers);
 
-        
-
-        Window.mapObj = map;
 
         // set map center depending on startcenter map option
         var startCenterValues = ['startpano', 'data', 'latlng'],
@@ -666,21 +671,14 @@ var krpanoplugin = function () {
 
         // add radar to map
         if (plugin.radar && plugin.radar.visible !== 'false') {
-            var opts = window.L.Radar.prototype.options;
-            let fill = 'truefalse01onoff'.indexOf(plugin.radar.fill) >= 0 ? 'true1on'.indexOf(plugin.radar.fill) : opts.fill;
-            var radar = new window.L.KrpanoRadar(undefined, 0, 0, 0, {
-                ...opts,
-                color: plugin.radar.strokecolor || opts.color,
-                opacity: plugin.radar.strokeopacity || opts.opacity,
-                weight: plugin.radar.strokewidth || opts.weight,
-                fill,
-                fillColor: plugin.radar.fillcolor || opts.fillColor,
-                fillAlpha: plugin.radar.fillalpha || opts.fillalpha,
-                krpano: krpano,
-                plugin: plugin,
-                clickable: true
-            })
-            radar.addTo(map);
+            var opts = window.L.Radar.prototype.options,
+                radar = new window.L.KrpanoRadar(undefined, 0, 0, 0, {
+                    color: plugin.radar.strokecolor || opts.color,
+                    fillColor: plugin.radar.fillcolor || opts.fillColor,
+                    krpano: krpano,
+                    plugin: plugin
+                })
+                    .addTo(map);
         }
 
         // for every marker in featureGroup bind some interaction:
@@ -721,8 +719,8 @@ var krpanoplugin = function () {
                         newPano();
                     }
 
-                    if (!window.leafletmap.leafletmapNewPano) {
-                        window.leafletmap.leafletmapNewPano = newPano;
+                    if (!window.krpanoPluginsStuff.leafletmap.leafletmapNewPano) {
+                        window.krpanoPluginsStuff.leafletmap.leafletmapNewPano = newPano;
                     }
                 } else {
                     newPano();
@@ -818,7 +816,7 @@ var krpanoplugin = function () {
             setAssetView(latlng, percentage || 50);
         }*/;
 
-        window.L.Util.extend(window.leafletmap, {
+        window.L.Util.extend(window.krpanoPluginsStuff.leafletmap, {
             addMarker: addMarker,
             setAssetView: setAssetView,
             requestMapSpots: requestMapSpots
@@ -925,7 +923,7 @@ var krpanoplugin = function () {
                     '   set(plugin[leafletmap].visible, false); ' +
                     '   , ' +
                     '   set(plugin[leafletmap].visible, true); ' +
-                    '   js( leafletmap.invMapSize () ); ' +
+                    '   js( krpanoPluginsStuff.leafletmap.invMapSize () ); ' +
                     ');'
             }
         );
@@ -996,27 +994,34 @@ var krpanoplugin = function () {
                 }
             }
         });
+
         window.L.myMap = function (id, options) {
             return new window.L.MyMap(id, options);
         };
+
     });
     // Radar class
+
     leafletmapPlugin.promise.then(function () {
 
         window.L.Radar = window.L.Path.extend({
             initialize: function (latlng, radius, viewAngel, fov, options) {
                 //WL.Path.prototype.initialize.call(this, options);
+
                 window.L.setOptions(this, options);
-                this._latlng = latlng; this._radius = radius || 0;
+
+                this._latlng = latlng;
+                this._radius = radius || 0;
                 this._viewAngle = viewAngel || 0;
                 this._fov = fov || 0;
             },
+
             options: {
-                fill: false,
-                opacity: 1,
+                fill: true,
+                opacity: 0.8,
                 weight: 2,
                 color: '#fff',
-                fillColor: '#0f0',
+                fillColor: '#333',
                 clickable: false
             },
 
@@ -1147,20 +1152,12 @@ var krpanoplugin = function () {
                     onviewchanged: window.L.bind(this.setRadarView, this),
                     onresize: window.L.bind(this.setRadarRadius, this)
                 });
-                var locale = this;
-                Window.mapObj.on('zoomend', function (_evt) {
-                    locale.setRadarRadius();
-                });
             },
             setRadarRadius: function () {
-                var h = this._mapToAdd.getContainer().offsetHeight || 0;
-                var condition = this.options.plugin.radar.zoomwithmap;
-                let zwm = 'true1on'.indexOf(condition) >= 0 ? Math.pow(2, Window.mapObj.getZoom()) / (1E4 * 6.5536) : 1;
-                var radiusPercent = this.options.plugin.radar.radiuspercent || 25;
-                var _value_ = h * radiusPercent / (100);
-                var _max_ = Math.max(_value_, 20);
-                var newRadius = Math.min(_max_, 90);
-                this.setRadius(newRadius * zwm); 
+                var h = this._mapToAdd.getContainer().offsetHeight || 0,
+                    radiusPercent = +this.options.plugin.radar.radiuspercent || 25,
+                    newRadius = Math.min(Math.max(h * radiusPercent / 100, 20), 90);
+                this.setRadius(newRadius);
             },
             setRadarView: function () {
                 this.setViewAngle(-this.options.krpano.sv.heading + 90).setFov(this.options.krpano.view.fov);
@@ -1238,7 +1235,7 @@ var krpanoplugin = function () {
 
             // initialize map stuff
             leafletmapPlugin.promise.then(function () {
-                window.leafletmap.invMapSize = leafletmapPlugin.initMap(plugincanvas, krpano, plugin);
+                window.krpanoPluginsStuff.leafletmap.invMapSize = leafletmapPlugin.initMap(plugincanvas, krpano, plugin);
 
                 leafletmapPlugin.leafletmapIncludeXMLContent(krpano);
                 // krpano.call("leafletmap_add_plugin_stuff();");
@@ -1257,7 +1254,7 @@ var krpanoplugin = function () {
     };
     // we need this if plugin was invisible on load.
     // Call it in vtourskin.xml on leafletmap_show_hide_container
-    window.leafletmap.invMapSize = undefined;
+    window.krpanoPluginsStuff.leafletmap.invMapSize = undefined;
 };
 
 //window\.[^=]+\s=\s
@@ -1265,7 +1262,7 @@ var krpanoplugin = function () {
 
 /*
 leafletmapPlugin.invalidateMapSize = function () {
-    window.leafletmap.invMapSize();
+    window.krpanoPluginsStuff.leafletmap.invMapSize();
 };*/
 
 /**

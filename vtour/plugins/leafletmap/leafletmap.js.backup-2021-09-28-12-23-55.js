@@ -1,5 +1,5 @@
 var krpanoplugin = function () {
-    window.leafletmap = {};
+    window.krpanoPluginsStuff.leafletmap = {};
 
     var leafletmapPlugin = {};
 
@@ -35,7 +35,7 @@ var krpanoplugin = function () {
                 path = parsed != null ? parsed[1] : '';
             }
 
-            window.leafletmap.firstXML = path;
+            window.krpanoPluginsStuff.leafletmap.firstXML = path;
 
             return path;
         })(),
@@ -199,7 +199,7 @@ var krpanoplugin = function () {
         }
     };
 
-    window.leafletmap.leafletjsLoadPromise = leafletmapPlugin.promise = new Promise(function (resolve, reject) {
+    window.krpanoPluginsStuff.leafletmap.leafletjsLoadPromise = leafletmapPlugin.promise = new Promise(function (resolve, reject) {
         leafletmapPlugin.DataProvider.getLeafletStuff(resolve);
     });
 
@@ -564,9 +564,6 @@ var krpanoplugin = function () {
             isLocalVersion: isLocalVersion
         }).on('zoomend', skipMarkers);
 
-        
-
-        Window.mapObj = map;
 
         // set map center depending on startcenter map option
         var startCenterValues = ['startpano', 'data', 'latlng'],
@@ -666,21 +663,14 @@ var krpanoplugin = function () {
 
         // add radar to map
         if (plugin.radar && plugin.radar.visible !== 'false') {
-            var opts = window.L.Radar.prototype.options;
-            let fill = 'truefalse01onoff'.indexOf(plugin.radar.fill) >= 0 ? 'true1on'.indexOf(plugin.radar.fill) : opts.fill;
-            var radar = new window.L.KrpanoRadar(undefined, 0, 0, 0, {
-                ...opts,
-                color: plugin.radar.strokecolor || opts.color,
-                opacity: plugin.radar.strokeopacity || opts.opacity,
-                weight: plugin.radar.strokewidth || opts.weight,
-                fill,
-                fillColor: plugin.radar.fillcolor || opts.fillColor,
-                fillAlpha: plugin.radar.fillalpha || opts.fillalpha,
-                krpano: krpano,
-                plugin: plugin,
-                clickable: true
-            })
-            radar.addTo(map);
+            var opts = window.L.Radar.prototype.options,
+                radar = new window.L.KrpanoRadar(undefined, 0, 0, 0, {
+                    color: plugin.radar.strokecolor || opts.color,
+                    fillColor: plugin.radar.fillcolor || opts.fillColor,
+                    krpano: krpano,
+                    plugin: plugin
+                })
+                    .addTo(map);
         }
 
         // for every marker in featureGroup bind some interaction:
@@ -721,8 +711,8 @@ var krpanoplugin = function () {
                         newPano();
                     }
 
-                    if (!window.leafletmap.leafletmapNewPano) {
-                        window.leafletmap.leafletmapNewPano = newPano;
+                    if (!window.krpanoPluginsStuff.leafletmap.leafletmapNewPano) {
+                        window.krpanoPluginsStuff.leafletmap.leafletmapNewPano = newPano;
                     }
                 } else {
                     newPano();
@@ -818,7 +808,7 @@ var krpanoplugin = function () {
             setAssetView(latlng, percentage || 50);
         }*/;
 
-        window.L.Util.extend(window.leafletmap, {
+        window.L.Util.extend(window.krpanoPluginsStuff.leafletmap, {
             addMarker: addMarker,
             setAssetView: setAssetView,
             requestMapSpots: requestMapSpots
@@ -925,7 +915,7 @@ var krpanoplugin = function () {
                     '   set(plugin[leafletmap].visible, false); ' +
                     '   , ' +
                     '   set(plugin[leafletmap].visible, true); ' +
-                    '   js( leafletmap.invMapSize () ); ' +
+                    '   js( krpanoPluginsStuff.leafletmap.invMapSize () ); ' +
                     ');'
             }
         );
@@ -996,27 +986,34 @@ var krpanoplugin = function () {
                 }
             }
         });
+
         window.L.myMap = function (id, options) {
             return new window.L.MyMap(id, options);
         };
+
     });
     // Radar class
+
     leafletmapPlugin.promise.then(function () {
 
         window.L.Radar = window.L.Path.extend({
             initialize: function (latlng, radius, viewAngel, fov, options) {
                 //WL.Path.prototype.initialize.call(this, options);
+
                 window.L.setOptions(this, options);
-                this._latlng = latlng; this._radius = radius || 0;
+
+                this._latlng = latlng;
+                this._radius = radius || 0;
                 this._viewAngle = viewAngel || 0;
                 this._fov = fov || 0;
             },
+
             options: {
-                fill: false,
-                opacity: 1,
+                fill: true,
+                opacity: 0.8,
                 weight: 2,
                 color: '#fff',
-                fillColor: '#0f0',
+                fillColor: '#333',
                 clickable: false
             },
 
@@ -1147,20 +1144,12 @@ var krpanoplugin = function () {
                     onviewchanged: window.L.bind(this.setRadarView, this),
                     onresize: window.L.bind(this.setRadarRadius, this)
                 });
-                var locale = this;
-                Window.mapObj.on('zoomend', function (_evt) {
-                    locale.setRadarRadius();
-                });
             },
             setRadarRadius: function () {
-                var h = this._mapToAdd.getContainer().offsetHeight || 0;
-                var condition = this.options.plugin.radar.zoomwithmap;
-                let zwm = 'true1on'.indexOf(condition) >= 0 ? Math.pow(2, Window.mapObj.getZoom()) / (1E4 * 6.5536) : 1;
-                var radiusPercent = this.options.plugin.radar.radiuspercent || 25;
-                var _value_ = h * radiusPercent / (100);
-                var _max_ = Math.max(_value_, 20);
-                var newRadius = Math.min(_max_, 90);
-                this.setRadius(newRadius * zwm); 
+                var h = this._mapToAdd.getContainer().offsetHeight || 0,
+                    radiusPercent = +this.options.plugin.radar.radiuspercent || 25,
+                    newRadius = Math.min(Math.max(h * radiusPercent / 100, 20), 90);
+                this.setRadius(newRadius);
             },
             setRadarView: function () {
                 this.setViewAngle(-this.options.krpano.sv.heading + 90).setFov(this.options.krpano.view.fov);
@@ -1238,7 +1227,7 @@ var krpanoplugin = function () {
 
             // initialize map stuff
             leafletmapPlugin.promise.then(function () {
-                window.leafletmap.invMapSize = leafletmapPlugin.initMap(plugincanvas, krpano, plugin);
+                window.krpanoPluginsStuff.leafletmap.invMapSize = leafletmapPlugin.initMap(plugincanvas, krpano, plugin);
 
                 leafletmapPlugin.leafletmapIncludeXMLContent(krpano);
                 // krpano.call("leafletmap_add_plugin_stuff();");
@@ -1257,7 +1246,7 @@ var krpanoplugin = function () {
     };
     // we need this if plugin was invisible on load.
     // Call it in vtourskin.xml on leafletmap_show_hide_container
-    window.leafletmap.invMapSize = undefined;
+    window.krpanoPluginsStuff.leafletmap.invMapSize = undefined;
 };
 
 //window\.[^=]+\s=\s
@@ -1265,7 +1254,7 @@ var krpanoplugin = function () {
 
 /*
 leafletmapPlugin.invalidateMapSize = function () {
-    window.leafletmap.invMapSize();
+    window.krpanoPluginsStuff.leafletmap.invMapSize();
 };*/
 
 /**

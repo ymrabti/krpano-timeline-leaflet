@@ -14,7 +14,7 @@
     <!-- Leafletmap plugin -->
     <plugin name="leafletmap" type="container" alturl="%BASEDIR%/plugins/leafletmap/leafletmap.js" devices="html5" keep="true" align="bottomleft" x="10" y="70" y_opened="90" y_closed="30" width="33%" height="40%" zorder="800" visible="true" btn_visible="true" environment="">
         <mapoptions zoom="16" maxzoom="16" startcenter="startpano" iconcommonsize="[12,12]" mapproviderurl="http://a.tile.openstreetmap.org/{z}/{x}/{y}.png" mapproviderkey="" mapproviderstyleid="" attributionline="" />
-        <radar visible="true" radiuspercent="25" strokecolor="#fff" fillcolor="#333" />
+        <radar visible="true" strokecolor="#fff" strokeopacity="1" strokewidth="2" fill="false" zoomwithmap="false" fillcolor="#333" radiuspercent="25" fillalpha="1" />
     </plugin>
 
 </krpano>
