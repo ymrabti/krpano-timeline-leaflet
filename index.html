@@ -39,8 +39,8 @@
     </head>
 
     <body>
-        <script src="vtour/embedpano.js"></script>
-        <script src="vtour/promise-polyfill2.0.0.js"></script>
+        <script src="tour.js"></script>
+        <!-- <script src="vtour/promise-polyfill2.0.0.js"></script> -->
         <div id="pano" style="width:100%;height:100%;">
             <noscript>
                 <table style="width:100%;height:100%;">
@@ -58,7 +58,7 @@
                 //settings.permalink_anchor = "pano";
 
                 //embedpano({swf: settings.files_path + "krpano.swf", xml: settings.files_path + "krpano.xml", target:"pano", html5:"prefer", vars: settings, passQueryParameters:true});
-                embedpano({ xml: "vtour/krpano.xml", target: "pano", html5: "auto", vars: settings, passQueryParameters: true });
+                embedpano({ swf:"tour.swf",xml: "vtour/krpano.xml", target: "pano", html5: "auto", vars: settings, passQueryParameters: true });
             </script>
         </div>
     </body>
