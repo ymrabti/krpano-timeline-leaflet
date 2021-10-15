@@ -8,6 +8,7 @@ var xlstojson = require("xls-to-json-lc");
 var xlsxtojson = require("xlsx-to-json-lc");
 var formidable = require('formidable');
 
+const fs = require("fs");
 
 let excels = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
 let jsons = ["application/json"]
@@ -280,7 +281,7 @@ module.exports = {
     },
     testUpload: async function (req, res) {
         var exceltojson; let json = [];
-        console.log(req.files);
+        // console.log(req.files);
         var form = new formidable.IncomingForm();
         form.parse(req, function (err, _fields, files) {
             if (err) {
@@ -316,34 +317,30 @@ module.exports = {
         });
     },
     json_upload: async function (req, res) {
-        var exceltojson; let json = [];
-        console.log(req.files);
         var form = new formidable.IncomingForm();
-        form.parse(req, function (err, _fields, files) {
+        form.parse(req, function (err, fields, files) {
             if (err) {
                 // res.write(err);
                 res.json({ ERROR: "error" });
             }
-            let type = files['file']['type'];
-            let name = files['file']['name'];
-            let lastModifiedDate = files['file']['lastModifiedDate'];
-            let size = files['file']['size'];
-            if (type == excels[0]) {
-                exceltojson = xlstojson;
-            } else {
-                res.json({ error: 'File must a JSON!' })
-            }
             try {
-                exceltojson({
-                    input: files.file.path,
-                    output: null, //since we don't need output.json
-                    lowerCaseHeaders: true
-                }, function (err, result) {
-                    if (err) {
-                        return res.json({ error_code: 8, err_desc: err, data: null });
+                if (!fields['textarea']) {
+                    let type = files['file']['type'];
+                    let name = files['file']['name'];
+                    let lastModifiedDate = files['file']['lastModifiedDate'];
+                    let size = files['file']['size'];
+                    if (type !== jsons[0]) {
+                        res.json({ error: 'File must a JSON!' })
                     }
-                    res.json(result);
-                });
+                    fs.readFile(files.file.path, "utf8", (err, jsonString) => {
+                        if (err) {
+                            console.log("File read failed:", err);
+                            return;
+                        }
+                        res.xls(name + '.xlsx', JSON.parse(jsonString));
+                    });
+                }
+                res.xls( 'result.xlsx', JSON.parse(fields['textarea']));
             } catch (e) {
                 res.json({ error_code: 6, err_desc: "Corupted excel file" });
             }
@@ -356,7 +353,7 @@ module.exports = {
         // if (!has(req.query, 'action')) throw { code: status.BAD_REQUEST, message: 'You must specify the action' };
 
         const settings = require('../../settings');
-        let { action } = req.query, favicon = settings.PROJECT_DIR + "\\src\\controllers\\icon.png";
+        let { action,jsontext } = req.query, favicon = settings.PROJECT_DIR + '/public/icon.png';
 
         var options_excel = {
             title: "Upload Excel File",
@@ -368,7 +365,7 @@ module.exports = {
             title: "Upload JSON File",
             action: "json_upload",
             accept: jsons.join(),
-            favicon
+            favicon,jsontext
         };
         var options = {
             title: "Upload Random File",

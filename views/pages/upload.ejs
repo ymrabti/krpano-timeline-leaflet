@@ -7,7 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Upload a file</title>
         <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-        <link rel="shortcut icon" href="<%- favicon -%>" type="image/png">
+        <link rel="shortcut icon" href="favicon" type="image/png">
         <style>
             body {
                 font-family: sans-serif;
@@ -144,69 +144,78 @@
                 transition: all .2s ease;
             }
         </style>
+        <%- include ("../partials/header.ejs") %>
     </head>
+    <%- include ("../partials/nav.ejs") %>
 
-    <body>
-        <script>
-            function readURL(input) {
-                if (input.files && input.files[0]) {
+        <body>
+            <script>
+                function readURL(input) {
+                    if (input.files && input.files[0]) {
 
-                    var reader = new FileReader();
+                        var reader = new FileReader();
 
-                    reader.onload = function (e) {
-                        $('.image-upload-wrap').hide();
+                        reader.onload = function (e) {
+                            $('.image-upload-wrap').hide();
 
-                        $('.file-upload-image').attr('data', e.target.result);
-                        $('.file-upload-content').show();
+                            $('.file-upload-image').attr('data', e.target.result);
+                            $('.file-upload-content').show();
 
-                        $('.image-title').html(input.files[0].name);
-                    };
+                            $('.image-title').html(input.files[0].name);
+                        };
 
-                    reader.readAsDataURL(input.files[0]);
+                        reader.readAsDataURL(input.files[0]);
 
-                } else {
-                    removeUpload();
+                    } else {
+                        removeUpload();
+                    }
                 }
-            }
 
-            function removeUpload() {
-                $('.file-upload-input').replaceWith($('.file-upload-input').clone());
-                $('.file-upload-content').hide();
-                $('.image-upload-wrap').show();
-            }
-            $('.image-upload-wrap').bind('dragover', function () {
-                $('.image-upload-wrap').addClass('image-dropping');
-            });
-            $('.image-upload-wrap').bind('dragleave', function () {
-                $('.image-upload-wrap').removeClass('image-dropping');
-            });
-            function submit(params) {
-                console.log(params);
-                return false;
-            }
-        </script>
-        <div class="file-upload">
+                function removeUpload() {
+                    $('.file-upload-input').replaceWith($('.file-upload-input').clone());
+                    $('.file-upload-content').hide();
+                    $('.image-upload-wrap').show();
+                }
+                $('.image-upload-wrap').bind('dragover', function () {
+                    $('.image-upload-wrap').addClass('image-dropping');
+                });
+                $('.image-upload-wrap').bind('dragleave', function () {
+                    $('.image-upload-wrap').removeClass('image-dropping');
+                });
+                function submit(params) {
+                    console.log(params);
+                    return false;
+                }
+            </script>
+            <div class="file-upload">
 
-            <%- title -%>
-            <button class="file-upload-btn" type="button" onclick="$('.file-upload-input').trigger( 'click' )">Add File</button>
+                <% if (!jsontext) { %>
+                    <%- title -%>
+                        <button class="file-upload-btn" type="button" onclick="$('.file-upload-input').trigger( 'click' )">Add File</button>
 
-            <form action="<%- action -%>" method="post" enctype="multipart/form-data">
-                <div class="image-upload-wrap">
-                    <input class="file-upload-input" multiple name="file" type='file' onchange="readURL(this);" accept="<%- accept -%>" />
-                    <div class="drag-text">
-                        <h3>Drag and drop a file or select add File</h3>
-                    </div>
-                </div>
-                <div class="file-upload-content">
-                    <object class="file-upload-image" data="" type=""></object>
-                    <div class="image-title-wrap">
-                        <button type="button" onclick="removeUpload()" class="remove-image">Remove <span class="image-title">Uploaded Image</span></button>
-                    </div>
-                    <input type="submit" class="submit-image" value="Submit" onsubmit="submit(this)">
-                </div>
-            </form>
+                        <form action="<%- action -%>" method="post" enctype="multipart/form-data">
+                            <div class="image-upload-wrap">
+                                <input class="file-upload-input" name="file" type='file' onchange="readURL(this);" accept="<%- accept -%>" />
+                                <div class="drag-text">
+                                    <h3>Drag and drop a file or select add File</h3>
+                                </div>
+                            </div>
+                            <div class="file-upload-content">
+                                <object class="file-upload-image" data="" type=""></object>
+                                <div class="image-title-wrap">
+                                    <button type="button" onclick="removeUpload()" class="remove-image">Remove <span class="image-title">Uploaded Image</span></button>
+                                </div>
+                                <input type="submit" class="submit-image" value="Submit" onsubmit="submit(this)">
+                            </div>
+                        </form>
+                    <% } %>
 
-        </div>
-    </body>
+                    <form action="<%- action -%>" method="post" enctype="multipart/form-data">
+                        <textarea name="textarea" id="jsonarea" cols="100" rows="10"></textarea>
+                        <input type="submit" class="submit-image" value="Submit" onsubmit="submit(this)">
+                    </form>
+
+            </div>
+        </body>
 
 </html>

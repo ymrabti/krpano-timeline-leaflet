@@ -45,6 +45,7 @@
         "png-js": "^1.0.0",
         "rotating-file-stream": "^1.4.6",
         "sequelize": "^5.19.2",
+        "serve-favicon": "^2.5.0",
         "three": "^0.133.1",
         "three.equirectangular-to-cubemap": "^1.1.0",
         "xls-to-json-lc": "^0.3.4",

@@ -33,6 +33,7 @@ const { PORT } = process.env;
 
 // Instantiate an Express Application
 const app = express();
+const settings = require('../settings');
 
 
 // Configure Express App Instance
