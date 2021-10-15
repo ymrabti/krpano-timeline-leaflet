@@ -8,6 +8,9 @@ var xlstojson = require("xls-to-json-lc");
 var xlsxtojson = require("xlsx-to-json-lc");
 var formidable = require('formidable');
 
+
+let excels = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+let jsons = ["application/json"]
 const Op = Sequelize.Op;
 
 function uuidv4() {
@@ -139,7 +142,6 @@ module.exports = {
                 // res.write(err);
                 res.json({ ERROR: "error" });
             }
-            let excels = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
             let type = files['file']['type'];
             let name = files['file']['name'];
             let lastModifiedDate = files['file']['lastModifiedDate'];
@@ -286,7 +288,6 @@ module.exports = {
                 res.json({ ERROR: "error" });
             }
             console.log(files['file']);
-            let excels = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
             let type = files['file']['type'];
             let name = files['file']['name'];
             let lastModifiedDate = files['file']['lastModifiedDate'];
@@ -314,222 +315,71 @@ module.exports = {
             }
         });
     },
-    form: async function (req, res) {
-        res.writeHead(200, { 'Content-Type': 'text/html' });
-        /* 
-        res.write('<form action="upload" method="post" id = "uploadForm" enctype="multipart/form-data">');
-        res.write('<input type="file" name="file"><br>');
-        res.write('<input type="submit">');
-        res.write('</form>');
-        res.sendFile(__dirname + '/upload-excel.html'); */
-        res.write(`
-<!DOCTYPE html>
-<html lang="en">
-
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Upload a file</title>
-        <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-        <style>
-            body {
-                font-family: sans-serif;
-                background-color: #eeeeee;
+    json_upload: async function (req, res) {
+        var exceltojson; let json = [];
+        console.log(req.files);
+        var form = new formidable.IncomingForm();
+        form.parse(req, function (err, _fields, files) {
+            if (err) {
+                // res.write(err);
+                res.json({ ERROR: "error" });
             }
-
-            .file-upload {
-                background-color: #ffffff;
-                width: 600px;
-                margin: 0 auto;
-                padding: 20px;
+            let type = files['file']['type'];
+            let name = files['file']['name'];
+            let lastModifiedDate = files['file']['lastModifiedDate'];
+            let size = files['file']['size'];
+            if (type == excels[0]) {
+                exceltojson = xlstojson;
+            } else {
+                res.json({ error: 'File must a JSON!' })
             }
-
-            .file-upload-btn {
-                width: 100%;
-                margin: 0;
-                color: #fff;
-                background: #1FB264;
-                border: none;
-                padding: 10px;
-                border-radius: 4px;
-                border-bottom: 4px solid #15824B;
-                transition: all .2s ease;
-                outline: none;
-                text-transform: uppercase;
-                font-weight: 700;
+            try {
+                exceltojson({
+                    input: files.file.path,
+                    output: null, //since we don't need output.json
+                    lowerCaseHeaders: true
+                }, function (err, result) {
+                    if (err) {
+                        return res.json({ error_code: 8, err_desc: err, data: null });
+                    }
+                    res.json(result);
+                });
+            } catch (e) {
+                res.json({ error_code: 6, err_desc: "Corupted excel file" });
             }
-
-            .file-upload-btn:hover {
-                background: #1AA059;
-                color: #ffffff;
-                transition: all .2s ease;
-                cursor: pointer;
-            }
-
-            .file-upload-btn:active {
-                border: 0;
-                transition: all .2s ease;
-            }
-
-            .file-upload-content {
-                display: none;
-                text-align: center;
-            }
-
-            .file-upload-input {
-                position: absolute;
-                margin: 0;
-                padding: 0;
-                width: 100%;
-                height: 100%;
-                outline: none;
-                opacity: 0;
-                cursor: pointer;
-            }
-
-            .image-upload-wrap {
-                margin-top: 20px;
-                border: 4px dashed #1FB264;
-                position: relative;
-            }
-
-            .image-dropping,
-            .image-upload-wrap:hover {
-                background-color: #1FB264;
-                border: 4px dashed #ffffff;
-            }
-
-            .image-title-wrap {
-                padding: 0 15px 15px 15px;
-                color: #222;
-            }
-
-            .drag-text {
-                text-align: center;
-            }
-
-            .drag-text h3 {
-                font-weight: 100;
-                text-transform: uppercase;
-                color: #15824B;
-                padding: 60px 0;
-            }
-
-            .file-upload-image {
-                max-height: 400px;
-                max-width: 400px;
-                margin: auto;
-                padding: 20px;
-            }
-
-            .submit-image{
-                background: #15824B;
-                border-bottom: 4px solid #10663b;
-            }
-            .remove-image {
-                background: #cd4535;
-                border-bottom: 4px solid #b02818;
-            }
-
-            .remove-image,.submit-image {
-                width: 200px;
-                margin: 0;
-                color: #fff;
-                border: none;
-                padding: 10px;
-                border-radius: 4px;
-                transition: all .2s ease;
-                outline: none;
-                text-transform: uppercase;
-                font-weight: 700;
-            }
-
-            .submit-image:hover {
-                background: #10663b;
-            }
-            .remove-image:hover {
-                background: #c13b2a;
-            }
-            .remove-image:hover,.submit-image:hover {
-                color: #ffffff;
-                transition: all .2s ease;
-                cursor: pointer;
-            }
-
-            .remove-image:active,.submit-image:active {
-                border: 0;
-                transition: all .2s ease;
-            }
-        </style>
-    </head>
-
-    <body>
-        <script>
-            function readURL(input) {
-                if (input.files && input.files[0]) {
-
-                    var reader = new FileReader();
-
-                    reader.onload = function (e) {
-                        $('.image-upload-wrap').hide();
-
-                        $('.file-upload-image').attr('data', e.target.result);
-                        $('.file-upload-content').show();
-
-                        $('.image-title').html(input.files[0].name);
-                    };
-
-                    reader.readAsDataURL(input.files[0]);
-
-                } else {
-                    removeUpload();
-                }
-            }
-
-            function removeUpload() {
-                $('.file-upload-input').replaceWith($('.file-upload-input').clone());
-                $('.file-upload-content').hide();
-                $('.image-upload-wrap').show();
-            }
-            $('.image-upload-wrap').bind('dragover', function () {
-                $('.image-upload-wrap').addClass('image-dropping');
-            });
-            $('.image-upload-wrap').bind('dragleave', function () {
-                $('.image-upload-wrap').removeClass('image-dropping');
-            });
-            function submit(params) {
-                console.log(params);
-                return false;
-            }
-        </script>
-        <div class="file-upload">
-            <button class="file-upload-btn" type="button" onclick="$('.file-upload-input').trigger( 'click' )">Add File</button>
-
-            <form action="tupload" method="post" enctype="multipart/form-data">
-                <div class="image-upload-wrap">
-                    <input class="file-upload-input" multiple name="file" type='file' onchange="readURL(this);" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
-                    <div class="drag-text">
-                        <h3>Drag and drop a file or select add File</h3>
-                    </div>
-                </div>
-                <div class="file-upload-content">
-                    <object class="file-upload-image" data="" type=""></object>
-                    <div class="image-title-wrap">
-                        <button type="button" onclick="removeUpload()" class="remove-image">Remove <span class="image-title">Uploaded Image</span></button>
-                    </div>
-                    <input type="submit" class="submit-image" value="Submit" onsubmit="submit(this)">
-                </div>
-            </form>
-
-        </div>
-    </body>
-
-</html>
-        `);
-        return res.end();
+        });
     },
+    form: async function (req, res) {
+        /* res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.write(``);
+        return res.end(); */
+        // if (!has(req.query, 'action')) throw { code: status.BAD_REQUEST, message: 'You must specify the action' };
 
+        const settings = require('../../settings');
+        let { action } = req.query, favicon = settings.PROJECT_DIR + "\\src\\controllers\\icon.png";
+
+        var options_excel = {
+            title: "Upload Excel File",
+            action: "tupload",
+            accept: excels.join(),
+            favicon
+        };
+        var options_json = {
+            title: "Upload JSON File",
+            action: "json_upload",
+            accept: jsons.join(),
+            favicon
+        };
+        var options = {
+            title: "Upload Random File",
+            action: "json_upload",
+            accept: "*",
+            favicon
+        };
+        res.render(
+            'pages/upload.ejs', action === "excel" ? options_excel : action === "json" ? options_json : options
+        );
+    },
     updateUser: async function (req, res) {
         if (!has(req.query, 'sv', 'rec_time')) throw { code: status.BAD_REQUEST, message: 'You must specify the streetview and rec_time' };
 
