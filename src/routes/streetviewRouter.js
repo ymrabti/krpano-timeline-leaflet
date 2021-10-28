@@ -8,11 +8,9 @@ router.use(json2xls.middleware);
 
 var favicon = require('serve-favicon');
 
-router.use(favicon(path.join(settings.PROJECT_DIR, 'public', 'icon.png')));
+router.use(favicon(path.join(settings.PROJECT_DIR, 'public', 'node.svg')));
 
-router
-    .use(express.static(path.join(settings.PROJECT_DIR, 'public')))
-    // .get('/upload', (req, res) => res.render('pages/index'));
+
 express()
     .set('views', path.resolve(settings.PROJECT_DIR, 'views'))
     .set('view engine', 'ejs')
@@ -29,16 +27,6 @@ router.post('/tupload', streetViewController.testUpload);
 router.post('/json_upload', streetViewController.json_upload);
 
 router.get('/upload', streetViewController.form);
-
-router.get('/favicon', async (req,res)=>{
-    fs.readFile(settings.PROJECT_DIR+"\\public\\icon.png",(err,data) => {
-        if (err) {
-            res.status(404).json({error:404})
-        }
-        res.setHeader('Content-Type','image/png');
-        res.end(data);
-    })
-});
 
 router.delete('/users/:id', streetViewController.deleteUser);
 router.put('/api/users', streetViewController.updateUser);

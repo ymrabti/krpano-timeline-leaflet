@@ -60,14 +60,20 @@ app.use('/', router);
 // Handle errors
 app.use(errorHandler());
 
+const path = require('path');
 
+app.use(express.static(path.resolve(settings.PROJECT_DIR, 'public')))
+
+app.use('/home', (req, res) => {
+    res.sendFile(path.resolve(settings.PROJECT_DIR, 'public', 'index.html'));
+});
 
 
 // Handle not valid route
 app.use('*', (req, res) => {
-    res
-        .status(404)
-        .json({ status: false, message: 'Endpoint Not Found' });
+    // res.status(404).json({ status: false, message: 'Endpoint Not Found' });
+    res.redirect(404, '/home')
+
 });
 
 app.listen(
