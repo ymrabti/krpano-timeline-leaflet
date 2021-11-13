@@ -24,8 +24,7 @@ require('mandatoryenv').load([
     'DB_DATABASE',
     'DB_USER',
     'DB_PASSWORD',
-    'PORT',
-    'SECRET'
+    'PORT'
 ]);
 
 const { PORT } = process.env;
@@ -53,14 +52,16 @@ app.use(helmet());
     next();
 }) */
 
+var favicon = require('serve-favicon');
+
+const path = require('path');
+app.use(favicon(path.join(settings.PROJECT_DIR, 'public', 'node.svg')));
 // Assign Routes
 
 let router = require('./routes/router');
 app.use('/', router);
 // Handle errors
 app.use(errorHandler());
-
-const path = require('path');
 
 app.use(express.static(path.resolve(settings.PROJECT_DIR, 'public')))
 
@@ -79,9 +80,6 @@ app.use('*', (req, res) => {
 app.listen(
     PORT,
     () => {
-        const all_routes = require('express-list-endpoints');
-        console.log("Global Routes :");
-        console.log(all_routes(app));
         console.info('Server listening on port ', PORT);
     }
 );

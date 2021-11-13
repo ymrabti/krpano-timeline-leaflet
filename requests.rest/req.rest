@@ -1,0 +1,12 @@
+
+GET http://localhost:3000/timeline.php?section=timeline&action=dates&sv=360_0012.JPG
+# jdf
+###
+
+POST http://localhost:3000/auth/Login
+Content-Type: application/json
+
+{
+    "username":"sdmb",
+    "password":"HelloWorld"
+}

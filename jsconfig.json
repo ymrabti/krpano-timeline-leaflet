@@ -1,0 +1,37 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@controllers/*": [
+                "src/controllers/*"
+            ],
+            "@root/*": [
+                "src/*"
+            ],
+            "@daos/*": [
+                "src/daos/*"
+            ],
+            "@entities/*": [
+                "src/entities/*"
+            ],
+            "@shared/*": [
+                "src/shared/*"
+            ],
+            "@server": [
+                "src/Server"
+            ],
+            "@util/*": [
+                "src/util/*"
+            ],
+            "@routes/*": [
+                "src/routes/*"
+            ],
+            "@models/*": [
+                "src/models/*"
+            ],
+            "@dir/*": [
+                "*"
+            ],
+        },
+    }
+}

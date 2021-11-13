@@ -3,7 +3,6 @@ const router = express.Router();
 const path = require('path');
 const settings = require('../../settings');
 var json2xls = require('json2xls');
-const fs = require('fs');
 router.use(json2xls.middleware);
 
 var favicon = require('serve-favicon');
@@ -14,25 +13,24 @@ router.use(favicon(path.join(settings.PROJECT_DIR, 'public', 'node.svg')));
 express()
     .set('views', path.resolve(settings.PROJECT_DIR, 'views'))
     .set('view engine', 'ejs')
-const streetViewController = require('../controllers/streetviewController');
+const { newSurveys, testUpload, json_upload, form } = require('@controllers/convertController');
+const { getXmlPano, getSpots, getTimeline } = require('../controllers/streetviewController');
 
-router.get('/kgen.php', streetViewController.getXmlPano);
+router.get('/kgen.php', getXmlPano);
 
-router.get('/mapspots.php', streetViewController.getSpots);
+router.get('/mapspots.php', getSpots);
 
-router.get('/timeline.php', streetViewController.getTimeline);
+router.get('/timeline.php', getTimeline);
 
-router.post('/upload', streetViewController.newSurveys);
-router.post('/tupload', streetViewController.testUpload);
-router.post('/json_upload', streetViewController.json_upload);
+router.post('/upload', newSurveys);
+router.post('/tupload', testUpload);
+router.post('/json_upload', json_upload);
 
-router.get('/upload', streetViewController.form);
+router.get('/upload', form);
 
-router.delete('/users/:id', streetViewController.deleteUser);
-router.put('/api/users', streetViewController.updateUser);
 
-const all_routes = require('express-list-endpoints');
+/* const all_routes = require('express-list-endpoints');
 console.log("StreetView Routes :");
-console.log(all_routes(router));
+console.log(all_routes(router)); */
 
 module.exports = router;
